@@ -43,6 +43,6 @@ object ReflectTest {
     val h = new HelloWorld
     import scala.collection.JavaConversions._
     ReflectUtils.wrapObject(h).injectConfigValue(Map("dataType" -> "Test-Data"))
-    println(h)
+    ReflectUtils.printConfigValue(h)
   }
 }

@@ -18,19 +18,17 @@ object AdminWrapper {
 
   def build(driver: String, url: String, user: String, password: String): Admin = {
     Class.forName(driver)
-    val admin = new Admin()
-    admin.url = url
-    admin.user = user
-    admin.password = password
-    admin
+    new Admin(url, user, password)
   }
 
-  class Admin {
-    var url: String = _
-    var user: String = _
-    var password: String = _
-    var conn: Connection = _
+  class Admin(url: String, user: String, password: String) {
+    private var conn: Connection = _
 
+    /**
+     * 创建连接
+     *
+     * @return
+     */
     def connect(): Admin = {
       try {
         if (null == conn || conn.isClosed) {
@@ -46,6 +44,12 @@ object AdminWrapper {
       this
     }
 
+    /**
+     * 执行sql
+     *
+     * @param sql 执行的sql
+     * @return
+     */
     def execute(sql: String): Boolean = {
       var status = false
       try {
@@ -56,6 +60,12 @@ object AdminWrapper {
       status
     }
 
+    /**
+     * 查询
+     *
+     * @param sql 执行的sql
+     * @return
+     */
     def executeQuery(sql: String): ResultSet = {
       var rs: ResultSet = null
       try {
@@ -66,6 +76,11 @@ object AdminWrapper {
       rs
     }
 
+    /**
+     * 获取hive表信息
+     *
+     * @return
+     */
     def getHiveTables: util.List[TableInfo] = {
       var list: util.List[TableInfo] = new util.ArrayList[TableInfo]()
       try {
@@ -124,6 +139,11 @@ object AdminWrapper {
       list
     }
 
+    /**
+     * 获取表信息
+     *
+     * @return
+     */
     def getTables: util.List[TableInfo] = {
       val list = new util.ArrayList[TableInfo]()
       try {
@@ -154,6 +174,9 @@ object AdminWrapper {
       list
     }
 
+    /**
+     * 关闭连接
+     */
     def close(): Unit = {
       try {
         conn.close()

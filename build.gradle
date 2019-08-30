@@ -58,4 +58,6 @@ dependencies {
     compile 'commons-lang:commons-lang:2.6'
     compile 'org.apache.commons:commons-compress:1.18'
     compile 'com.jcraft:jsch:0.1.55'
+
+    implementation 'mysql:mysql-connector-java:5.1.6'
 }

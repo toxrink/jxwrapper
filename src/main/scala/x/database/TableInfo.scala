@@ -6,9 +6,9 @@ import java.util
 import scala.beans.BeanProperty
 
 /**
-  * Created by xw on 2019/8/29.
-  */
-class TableInfo {
+ * Created by xw on 2019/8/29.
+ */
+class TableInfo() {
   @BeanProperty
   var table: String = ""
 
@@ -33,31 +33,31 @@ class TableInfo {
     list.toArray(Array[String]())
   }
 
-  def getStringColumns(): Array[String] = {
+  def getStringColumns: Array[String] = {
     getColumnsByType(Types.VARCHAR)
   }
 
-  def getIntegertColumns(): Array[String] = {
+  def getIntegertColumns: Array[String] = {
     getColumnsByType(Types.INTEGER)
   }
 
-  def getBigintColumns(): Array[String] = {
+  def getBigintColumns: Array[String] = {
     getColumnsByType(Types.BIGINT)
   }
 
-  def getTimestampColumns(): Array[String] = {
+  def getTimestampColumns: Array[String] = {
     getColumnsByType(Types.TIMESTAMP)
   }
 
-  def getDoubleColumns(): Array[String] = {
+  def getDoubleColumns: Array[String] = {
     getColumnsByType(Types.DOUBLE)
   }
 
-  def getBooleanColumns(): Array[String] = {
+  def getBooleanColumns: Array[String] = {
     getColumnsByType(Types.BOOLEAN)
   }
 
   override def toString: String = {
-    s"TableInfo [columnTypes=${util.Arrays.toString(columnTypes)}, columnWithTypeMap=$columnWithTypeMap, columns=${util.Arrays.toString(columns.asInstanceOf[Array[Object]])}, table=$table]"
+    s"TableInfo [\n\ttable=$table, \n\tcolumnTypes=${util.Arrays.toString(columnTypes)}, \n\tcolumnWithTypeMap=$columnWithTypeMap, \n\tcolumns=${util.Arrays.toString(columns.asInstanceOf[Array[Object]])}\n]"
   }
 }

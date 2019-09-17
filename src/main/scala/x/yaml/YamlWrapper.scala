@@ -8,8 +8,8 @@ import x.utils.JxUtils
 import scala.io.Source
 
 /**
-  * Created by xw on 2019/8/1.
-  */
+ * Created by xw on 2019/8/1.
+ */
 object YamlWrapper {
 
   private val log = JxUtils.getLogger(YamlWrapper.getClass)
@@ -37,4 +37,5 @@ object YamlWrapper {
   def loadAsYamlEntry(yml: util.LinkedHashMap[String, Object]): YamlEntry = {
     new YamlEntry(yml)
   }
+
 }

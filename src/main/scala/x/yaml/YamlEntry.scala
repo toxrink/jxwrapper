@@ -5,8 +5,8 @@ import java.util
 import x.utils.StrUtils
 
 /**
-  * Created by xw on 2019/8/1.
-  */
+ * Created by xw on 2019/8/1.
+ */
 class YamlEntry(yml: util.LinkedHashMap[String, Object]) {
   var ymlGlobal: util.LinkedHashMap[String, Object] = yml
 
@@ -53,12 +53,10 @@ class YamlEntry(yml: util.LinkedHashMap[String, Object]) {
 
   def getArray(implicit key: String): Array[String] = {
     val a: Object = getValue(key)
-    if (null == a) {
-      null
-    } else if (a.isInstanceOf[util.List[String]]) {
-      a.asInstanceOf[util.List[String]].toArray(Array[String]())
-    } else {
-      a.asInstanceOf[Array[String]]
+    a match {
+      case arr: Array[String] => arr
+      case arr2: util.List[String] => arr2.toArray(Array[String]())
+      case _ => null
     }
   }
 

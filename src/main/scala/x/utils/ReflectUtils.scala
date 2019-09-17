@@ -6,7 +6,7 @@ import java.util.function.Predicate
 import java.util.stream.Collectors
 
 import org.apache.commons.lang.StringUtils
-import x.common.annotation.ConfigValue
+import x.common.annotation.{ConfigValue, InjectValue}
 
 /**
  * Created by xw on 2019/8/28.
@@ -58,6 +58,31 @@ object ReflectUtils {
       }
     }).reduce(_ + _)
     LOG.info(obj.getClass + " ConsumerConfig values:\n\n" + valueList)
+  }
+
+  /**
+   * 获取带有InjectValue注解的指定类型字段
+   *
+   * @param baseClass 需要查找的类
+   * @param dstType   查找的对象
+   * @return
+   */
+  def findFieldByType(baseClass: Class[_], dstType: Class[_]): Field = {
+    if (null == baseClass || classOf[Object].getName.equals(baseClass.getName)) {
+      null
+    } else {
+      val dstName = dstType.getName
+      val result = baseClass.getDeclaredFields.find(f => {
+        val getType = f.getType().getName().equals(dstName)
+        val getAnno = null != f.getAnnotation(classOf[InjectValue])
+        getType && getAnno
+      })
+      if (result.isDefined) {
+        result.get
+      } else {
+        findFieldByType(baseClass.getSuperclass, dstType)
+      }
+    }
   }
 
   /**

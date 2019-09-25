@@ -7,8 +7,8 @@ import x.utils.JxUtils
 import scala.collection.JavaConverters._
 
 /**
- * Created by xw on 2019/8/29.
- */
+  * Created by xw on 2019/8/29.
+  */
 object AdminWrapper {
   private val LOG = JxUtils.getLogger(AdminWrapper.getClass)
 
@@ -25,10 +25,10 @@ object AdminWrapper {
     private var conn: Connection = _
 
     /**
-     * 创建连接
-     *
-     * @return
-     */
+      * 创建连接
+      *
+      * @return
+      */
     def connect(): Admin = {
       try {
         if (null == conn || conn.isClosed) {
@@ -45,11 +45,11 @@ object AdminWrapper {
     }
 
     /**
-     * 执行sql
-     *
-     * @param sql 执行的sql
-     * @return
-     */
+      * 执行sql
+      *
+      * @param sql 执行的sql
+      * @return
+      */
     def execute(sql: String): Boolean = {
       var status = false
       try {
@@ -61,11 +61,11 @@ object AdminWrapper {
     }
 
     /**
-     * 查询
-     *
-     * @param sql 执行的sql
-     * @return
-     */
+      * 查询
+      *
+      * @param sql 执行的sql
+      * @return
+      */
     def executeQuery(sql: String): ResultSet = {
       var rs: ResultSet = null
       try {
@@ -77,10 +77,10 @@ object AdminWrapper {
     }
 
     /**
-     * 获取hive表信息
-     *
-     * @return
-     */
+      * 获取hive表信息
+      *
+      * @return
+      */
     def getHiveTables: util.List[TableInfo] = {
       var list: util.List[TableInfo] = new util.ArrayList[TableInfo]()
       try {
@@ -96,7 +96,8 @@ object AdminWrapper {
                 LOG.debug("null or exists field, skip " + rs2.getString(1))
               }
             } else {
-              rs2.getString(2) match {
+              val fieldType = rs2.getString(2)
+              fieldType match {
                 case "string" =>
                   cList.add(rs2.getString(1))
                   ctList.add(Types.VARCHAR)
@@ -121,6 +122,7 @@ object AdminWrapper {
                   cList.add(rs2.getString(1))
                   ctList.add(Types.BOOLEAN)
                   columnWithTypeMap.put(rs2.getString(1), Types.BOOLEAN)
+                case _ => LOG.debug(s"UNKNOW_TYPE#$fieldType")
               }
             }
           }
@@ -140,10 +142,10 @@ object AdminWrapper {
     }
 
     /**
-     * 获取表信息
-     *
-     * @return
-     */
+      * 获取表信息
+      *
+      * @return
+      */
     def getTables: util.List[TableInfo] = {
       val list = new util.ArrayList[TableInfo]()
       try {
@@ -175,8 +177,8 @@ object AdminWrapper {
     }
 
     /**
-     * 关闭连接
-     */
+      * 关闭连接
+      */
     def close(): Unit = {
       try {
         conn.close()

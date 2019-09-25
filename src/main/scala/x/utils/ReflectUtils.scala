@@ -9,64 +9,66 @@ import org.apache.commons.lang.StringUtils
 import x.common.annotation.{ConfigValue, InjectValue}
 
 /**
- * Created by xw on 2019/8/28.
- */
+  * Created by xw on 2019/8/28.
+  */
 object ReflectUtils {
   private val LOG = JxUtils.getLogger(ReflectUtils.getClass)
 
   /**
-   * 打印包含ConfigValue的属性值
-   *
-   * @param obj 打印对象
-   */
+    * 打印包含ConfigValue的属性值
+    *
+    * @param obj 打印对象
+    */
   def printConfigValue(obj: Object): Unit = {
     import scala.collection.JavaConversions._
     val wrapper = wrapObject(obj)
-    val valueList = wrapper.getConfigValueList.map(v => {
-      val cv = v.getAnnotation(classOf[ConfigValue])
-      var tmpValue: Object = null
-      val nameList = new util.ArrayList[String](1 + cv.aliases().length)
-      try {
-        v.getType.getSimpleName match {
-          case "String" | "int" | "long" | "float" | "double" | "short" | "boolean" | "ImmutableList" =>
-            tmpValue = wrapper.getValue(v)
-          case "String[]" =>
-            tmpValue = wrapper.getValue(v).asInstanceOf[Array[String]].mkString(cv.sp())
-          case _ =>
-            val tmp3: Object = wrapper.getValue(v)
-            if (null != tmp3) {
-              tmpValue = tmp3.toString
-            } else {
-              tmpValue = ""
-            }
-        }
-        if (StringUtils.isNotEmpty(cv.alias())) {
-          nameList.add(cv.alias())
-        }
-        for (n <- cv.aliases()) {
-          if (StringUtils.isNotEmpty(n)) {
-            nameList.add(n)
+    val valueList = wrapper.getConfigValueList
+      .map(v => {
+        val cv = v.getAnnotation(classOf[ConfigValue])
+        var tmpValue: Object = null
+        val nameList = new util.ArrayList[String](1 + cv.aliases().length)
+        try {
+          v.getType.getSimpleName match {
+            case "String" | "int" | "long" | "float" | "double" | "short" | "boolean" | "ImmutableList" =>
+              tmpValue = wrapper.getValue(v)
+            case "String[]" =>
+              tmpValue = wrapper.getValue(v).asInstanceOf[Array[String]].mkString(cv.sp())
+            case _ =>
+              val tmp3: Object = wrapper.getValue(v)
+              if (null != tmp3) {
+                tmpValue = tmp3.toString
+              } else {
+                tmpValue = ""
+              }
           }
+          if (StringUtils.isNotEmpty(cv.alias())) {
+            nameList.add(cv.alias())
+          }
+          for (n <- cv.aliases()) {
+            if (StringUtils.isNotEmpty(n)) {
+              nameList.add(n)
+            }
+          }
+        } catch {
+          case _: Throwable =>
         }
-      } catch {
-        case _: Throwable =>
-      }
-      if (StringUtils.isEmpty(cv.alias()) && cv.aliases().length == 0) {
-        String.format("\t%1$s = %2$s\n", v.getName, String.valueOf(tmpValue))
-      } else {
-        String.format("\t%1$s(%2$s) = %3$s\n", v.getName, StringUtils.join(nameList, ","), String.valueOf(tmpValue))
-      }
-    }).reduce(_ + _)
+        if (StringUtils.isEmpty(cv.alias()) && cv.aliases().length == 0) {
+          String.format("\t%1$s = %2$s\n", v.getName, String.valueOf(tmpValue))
+        } else {
+          String.format("\t%1$s(%2$s) = %3$s\n", v.getName, StringUtils.join(nameList, ","), String.valueOf(tmpValue))
+        }
+      })
+      .reduce(_ + _)
     LOG.info(obj.getClass + " ConsumerConfig values:\n\n" + valueList)
   }
 
   /**
-   * 获取带有InjectValue注解的指定类型字段
-   *
-   * @param baseClass 需要查找的类
-   * @param dstType   查找的对象
-   * @return
-   */
+    * 获取带有InjectValue注解的指定类型字段
+    *
+    * @param baseClass 需要查找的类
+    * @param dstType   查找的对象
+    * @return
+    */
   def findFieldByType(baseClass: Class[_], dstType: Class[_]): Field = {
     if (null == baseClass || classOf[Object].getName.equals(baseClass.getName)) {
       null
@@ -86,101 +88,105 @@ object ReflectUtils {
   }
 
   /**
-   * 调用无参方法
-   *
-   * @param obj    对象
-   * @param method 方法名
-   * @tparam T 结果
-   * @return
-   */
+    * 调用无参方法
+    *
+    * @param obj    对象
+    * @param method 方法名
+    * @tparam T 结果
+    * @return
+    */
   def invokeValue[T](obj: Object, method: String): T = {
     obj.getClass.getMethod(method).invoke(obj).asInstanceOf[T]
   }
 
   /**
-   * 生成实例
-   *
-   * @param clazz 类名
-   * @tparam T 结果
-   * @return
-   */
+    * 生成实例
+    *
+    * @param clazz 类名
+    * @tparam T 结果
+    * @return
+    */
   def loadNewInstance[T](clazz: String): T = {
     newInstance(ReflectUtils.getClass.getClassLoader.loadClass(clazz))
   }
 
   /**
-   * 生成实例
-   *
-   * @param clazz 类名
-   * @tparam T 结果
-   * @return
-   */
+    * 生成实例
+    *
+    * @param clazz 类名
+    * @tparam T 结果
+    * @return
+    */
   def newInstance[T](clazz: String): T = newInstance(Class.forName(clazz))
 
   /**
-   * 生成实例
-   *
-   * @param clazz 类名
-   * @tparam T 结果
-   * @return
-   */
+    * 生成实例
+    *
+    * @param clazz 类名
+    * @tparam T 结果
+    * @return
+    */
   def newInstance[T](clazz: Class[_]): T = clazz.newInstance().asInstanceOf[T]
 
   /**
-   * 生成实例
-   *
-   * @param clazz          类名
-   * @param parameterTypes 参数类型
-   * @param initargs       参数
-   * @tparam T 结果
-   * @return
-   */
+    * 生成实例
+    *
+    * @param clazz          类名
+    * @param parameterTypes 参数类型
+    * @param initargs       参数
+    * @tparam T 结果
+    * @return
+    */
   def newInstance[T](clazz: String, parameterTypes: Array[Class[_]], initargs: Array[Object]): T = {
     newInstance(Class.forName(clazz), parameterTypes, initargs)
   }
 
   /**
-   * 生成实例
-   *
-   * @param clazz          类名
-   * @param parameterTypes 参数类型
-   * @param initargs       参数
-   * @tparam T 结果
-   * @return
-   */
+    * 生成实例
+    *
+    * @param clazz          类名
+    * @param parameterTypes 参数类型
+    * @param initargs       参数
+    * @tparam T 结果
+    * @return
+    */
   def newInstance[T](clazz: Class[_], parameterTypes: Array[Class[_]], initargs: Array[Object]): T = {
     clazz.getConstructor(parameterTypes: _*).newInstance(initargs).asInstanceOf[T]
   }
 
   /**
-   * 字段赋值
-   *
-   * @param obj   对象
-   * @param field 字段
-   * @param value 设置值
-   */
+    * 字段赋值
+    *
+    * @param obj   对象
+    * @param field 字段
+    * @param value 设置值
+    */
   def setValue(obj: Object, field: Field, value: Any): Unit = {
     field.setAccessible(true)
     field.set(obj, value)
   }
 
   /**
-   * 生成类包装器
-   *
-   * @param obj 对象
-   * @return
-   */
+    * 生成类包装器
+    *
+    * @param obj 对象
+    * @return
+    */
   def wrapObject(obj: Object): ClassWrapper = ClassWrapper(obj)
 
   case class ClassWrapper(var obj: Object) {
-    private var extMap: util.Map[Class[_], GetValueExtFunction] = new util.HashMap[Class[_], ReflectUtils.GetValueExtFunction](0)
+    private var extMap: util.Map[Class[_], GetValueExtFunction] =
+      new util.HashMap[Class[_], ReflectUtils.GetValueExtFunction](0)
 
-    private def getValue[T](context: util.Map[String, _], names: Array[String], defVal: String, con: String => T): Option[T] = {
+    private def getValue[T](context: util.Map[String, _],
+                            names: Array[String],
+                            defVal: String,
+                            con: String => T): Option[T] = {
       for (key <- names) {
         if (!StrUtils.isEmpty(key)) {
           val ret = context.get(key)
           if (null != ret) {
-            return Some(con(ret.toString))
+            return Some(con(StrUtils.getEnvironmentValue(ret.toString)))
           }
         }
       }
@@ -192,33 +198,33 @@ object ReflectUtils {
     }
 
     /**
-     * 获取字段注解
-     *
-     * @param field 字段
-     * @return
-     */
+      * 获取字段注解
+      *
+      * @param field 字段
+      * @return
+      */
     def getAnnotation(field: Field): ConfigValue = {
       field.getAnnotation(classOf[ConfigValue])
     }
 
     /**
-     * 设置新的包装类
-     *
-     * @param objNew 包装对象
-     * @return
-     */
+      * 设置新的包装类
+      *
+      * @param objNew 包装对象
+      * @return
+      */
     def setObject(objNew: Object): ClassWrapper = {
       obj = objNew
       this
     }
 
     /**
-     * 添加额外的赋值方法
-     *
-     * @param c 类型
-     * @param f 方法
-     * @return
-     */
+      * 添加额外的赋值方法
+      *
+      * @param c 类型
+      * @param f 方法
+      * @return
+      */
     def putExtFunction(c: Class[_], f: GetValueExtFunction): ClassWrapper = {
       if (null == extMap) {
         extMap = new util.HashMap[Class[_], ReflectUtils.GetValueExtFunction]()
@@ -228,11 +234,11 @@ object ReflectUtils {
     }
 
     /**
-     * 获取有ConfigValue注解的字段
-     *
-     * @param clazz 类型
-     * @return
-     */
+      * 获取有ConfigValue注解的字段
+      *
+      * @param clazz 类型
+      * @return
+      */
     def getConfigValueList(clazz: Class[_]): util.List[Field] = {
       if (null == clazz) {
         new util.ArrayList[Field]()
@@ -240,17 +246,20 @@ object ReflectUtils {
         val list = new util.ArrayList[Field]()
         list.addAll(getConfigValueList(clazz.getSuperclass))
         list.addAll(util.Arrays.asList(clazz.getDeclaredFields(): _*))
-        list.stream().filter(new Predicate[Field] {
-          override def test(t: Field): Boolean = null != getAnnotation(t)
-        }).collect(Collectors.toList())
+        list
+          .stream()
+          .filter(new Predicate[Field] {
+            override def test(t: Field): Boolean = null != getAnnotation(t)
+          })
+          .collect(Collectors.toList())
       }
     }
 
     /**
-     * 获取有ConfigValue注解的字段
-     *
-     * @return
-     */
+      * 获取有ConfigValue注解的字段
+      *
+      * @return
+      */
     def getConfigValueList: util.List[Field] = {
       val clazz = obj.getClass
       if (null == clazz) {
@@ -259,19 +268,22 @@ object ReflectUtils {
         val list = new util.ArrayList[Field]()
         list.addAll(getConfigValueList(clazz.getSuperclass))
         list.addAll(util.Arrays.asList(clazz.getDeclaredFields(): _*))
-        list.stream().filter(new Predicate[Field] {
-          override def test(t: Field): Boolean = null != getAnnotation(t)
-        }).collect(Collectors.toList())
+        list
+          .stream()
+          .filter(new Predicate[Field] {
+            override def test(t: Field): Boolean = null != getAnnotation(t)
+          })
+          .collect(Collectors.toList())
       }
     }
 
     /**
-     * 字段设值
-     *
-     * @param field 字段
-     * @param value 设置值
-     * @return
-     */
+      * 字段设值
+      *
+      * @param field 字段
+      * @param value 设置值
+      * @return
+      */
     @throws[IllegalArgumentException]
     @throws[IllegalAccessException]
     def setValue(field: Field, value: Option[Any]): ClassWrapper = {
@@ -282,12 +294,12 @@ object ReflectUtils {
     }
 
     /**
-     * 字段设值
-     *
-     * @param field 字段
-     * @param func  方法
-     * @return
-     */
+      * 字段设值
+      *
+      * @param field 字段
+      * @param func  方法
+      * @return
+      */
     @throws[IllegalArgumentException]
     @throws[IllegalAccessException]
     def setValue(field: Field, func: GetValueFunction): ClassWrapper = {
@@ -296,12 +308,12 @@ object ReflectUtils {
     }
 
     /**
-     * 获取字段值
-     *
-     * @param field 字段
-     * @tparam T 结果
-     * @return
-     */
+      * 获取字段值
+      *
+      * @param field 字段
+      * @tparam T 结果
+      * @return
+      */
     @throws[IllegalArgumentException]
     @throws[IllegalAccessException]
     def getValue[T](field: Field): T = {
@@ -310,19 +322,19 @@ object ReflectUtils {
     }
 
     /**
-     * 对象属性设值
-     *
-     * @param context 配置
-     */
+      * 对象属性设值
+      *
+      * @param context 配置
+      */
     def injectConfigValue(context: util.Map[String, _]): Unit = injectConfigValue(context, this.extMap)
 
     /**
-     * 对象属性设值
-     *
-     * @param context 配置
-     * @param ext     额外配置获取方法
-     * @return
-     */
+      * 对象属性设值
+      *
+      * @param context 配置
+      * @param ext     额外配置获取方法
+      * @return
+      */
     def injectConfigValue(context: util.Map[String, _], ext: util.Map[Class[_], GetValueExtFunction]): ClassWrapper = {
       import scala.collection.JavaConversions._
       getConfigValueList(obj.getClass).foreach(field => {
@@ -370,20 +382,19 @@ object ReflectUtils {
       })
       this
     }
-
   }
 
   /**
-   * 取值
-   */
+    * 取值
+    */
   @FunctionalInterface
   trait GetValueFunction {
     def apply[T](): T
   }
 
   /**
-   * 取值
-   */
+    * 取值
+    */
   @FunctionalInterface
   trait GetValueExtFunction {
     def apply(context: util.Map[String, _], names: Array[String], configValue: ConfigValue, field: Field): Object

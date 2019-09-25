@@ -76,11 +76,8 @@ object IpUtils {
   }
 
 //  def main(args: Array[String]): Unit = {
-//    println(ipToNum("192.168.15.250"))
-//    println(numToIp(3232239610l))
-//    println(isInRange("192.168.15.220", "192.168.15.200", "192.168.15.250"))
-//    println(isInRange("192.168.15.251", "192.168.15.200", "192.168.15.250"))
-//    println(isIp("192.168.15.251"))
-//    println(isIp("192.168.15.251a"))
+//    val t = "${ES_CLUSTER_UNAME:hahha}"
+////    val t = "ES_CLUSTER_UNAME:hahha}"
+//    println(StrUtils.getEnvironmentValue(t))
 //  }
 }

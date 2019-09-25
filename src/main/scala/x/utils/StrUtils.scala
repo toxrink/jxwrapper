@@ -9,6 +9,7 @@ import x.self.JxConst
   * Created by xw on 2019/8/1.
   */
 object StrUtils {
+
   /**
     * 字符串判空
     *
@@ -39,14 +40,17 @@ object StrUtils {
       s
     } else {
       val md5 = MessageDigest.getInstance("MD5")
-      md5.digest(s.getBytes(JxConst.UTF8)).map(b => {
-        val i = b & 0xff
-        if (i < 16) {
-          "0" + Integer.toHexString(i)
-        } else {
-          Integer.toHexString(i)
-        }
-      }).mkString
+      md5
+        .digest(s.getBytes(JxConst.UTF8))
+        .map(b => {
+          val i = b & 0xff
+          if (i < 16) {
+            "0" + Integer.toHexString(i)
+          } else {
+            Integer.toHexString(i)
+          }
+        })
+        .mkString
     }
   }
 
@@ -156,11 +160,38 @@ object StrUtils {
     */
   def camelToUnderLine(s: String): String = {
     s.map(c => {
-      if (c > 64 && c < 91) {
-        "_" + c
+        if (c > 64 && c < 91) {
+          "_" + c
+        } else {
+          c
+        }
+      })
+      .mkString
+  }
+
+  def getEnvironmentValue(t: String): String = {
+    if (t.startsWith("${") && t.endsWith("}")) {
+      val index = t.indexOf(":")
+      if (-1 != index) {
+        val key = t.substring(2, index)
+        val value = t.substring(index + 1, t.length - 1)
+        val v1 = System.getenv.get(key)
+        if (null == v1) {
+          System.getProperty(key, value)
+        } else {
+          v1
+        }
       } else {
-        c
+        val key = t.substring(2, t.length - 2)
+        val v1 = System.getenv.get(key)
+        if (null == v1) {
+          System.getProperty(key)
+        } else {
+          v1
+        }
       }
-    }).mkString
+    } else {
+      t
+    }
   }
 }

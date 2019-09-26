@@ -69,13 +69,14 @@ object ReflectUtils {
     * @param dstType   查找的对象
     * @return
     */
+  @scala.annotation.tailrec
   def findFieldByType(baseClass: Class[_], dstType: Class[_]): Field = {
     if (null == baseClass || classOf[Object].getName.equals(baseClass.getName)) {
       null
     } else {
       val dstName = dstType.getName
       val result = baseClass.getDeclaredFields.find(f => {
-        val getType = f.getType().getName().equals(dstName)
+        val getType = f.getType.getName.equals(dstName)
         val getAnno = null != f.getAnnotation(classOf[InjectValue])
         getType && getAnno
       })
@@ -151,7 +152,7 @@ object ReflectUtils {
     * @return
     */
   def newInstance[T](clazz: Class[_], parameterTypes: Array[Class[_]], initargs: Array[Object]): T = {
-    clazz.getConstructor(parameterTypes: _*).newInstance(initargs).asInstanceOf[T]
+    clazz.getConstructor(parameterTypes: _*).newInstance(initargs: _*).asInstanceOf[T]
   }
 
   /**

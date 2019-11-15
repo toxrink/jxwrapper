@@ -8,18 +8,22 @@ import x.utils.JxUtils
 import scala.io.Source
 
 /**
- * Created by xw on 2019/8/1.
- */
+  * Created by xw on 2019/8/1.
+  */
 object YamlWrapper {
 
   private val log = JxUtils.getLogger(YamlWrapper.getClass)
 
   def loadYamlAs[T](path: String, ctype: Class[T]): T = {
+    loadYamlAs(path, ctype, "UTF-8")
+  }
+
+  def loadYamlAs[T](path: String, ctype: Class[T], charset: String): T = {
     if (log.isDebugEnabled) {
       log.debug("load yaml file " + path)
     }
     val yaml = new Yaml()
-    val reader = Source.fromFile(path, "UTF-8").bufferedReader()
+    val reader = Source.fromFile(path, charset).bufferedReader()
     val as = yaml.loadAs(reader, ctype)
     reader.close()
     as

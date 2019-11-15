@@ -257,4 +257,32 @@ object CmdWrapper {
     }
     jxProcess
   }
+
+  /**
+    * 执行cmd
+    *
+    * @param command 命令
+    * @return
+    */
+  def run(command: Array[String]): JxProcess = {
+    run(command.mkString(" "))
+  }
+
+  /**
+    * 包含运行环境变量执行cmd
+    *
+    * @param command 命令
+    * @return
+    */
+  def runWithEnv(command: Array[String]): JxProcess = {
+    var jxProcess: JxProcess = null
+    try {
+      log.info(command.mkString(" "))
+      val processBuilder = new ProcessBuilder(command: _*)
+      jxProcess = new JxProcess(processBuilder.start())
+    } catch {
+      case e: Throwable => log.error("", e)
+    }
+    jxProcess
+  }
 }

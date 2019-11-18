@@ -10,28 +10,28 @@ import x.yaml.YamlWrapper
 object AreaUtils {
 
   /**
-    * 读取区域配置
-    * <br>
-    * yml格式如下:
-    * <p>地区1:<br>
-    * &nbsp;&nbsp;area-code: xxxxxxxxxx<br>
-    * &nbsp;&nbsp;ip-ranges: 10.22.0.1-10.22.40.254,10.22.42.1-10.22.45.254<br>
-    *</p>
-    * ...
-    * <p>地区n:<br>
-    * &nbsp;&nbsp;area-code: xxxxxxxxxx<br>
-    * &nbsp;&nbsp;ip-ranges: 10.22.0.1-10.22.40.254,10.22.42.1-10.22.45.254<br>
-    *</p>
+    * * 读取区域配置
+    * * <br>
+    * * yml格式如下:
+    * * <p>地区1:<br>
+    * * &nbsp;&nbsp;area-code: xxxxxxxxxx<br>
+    * * &nbsp;&nbsp;ip-ranges: 10.22.0.1-10.22.40.254,10.22.42.1-10.22.45.254<br>
+    * *</p>
+    * * ...
+    * * <p>地区n:<br>
+    * * &nbsp;&nbsp;area-code: xxxxxxxxxx<br>
+    * * &nbsp;&nbsp;ip-ranges: 10.22.0.1-10.22.40.254,10.22.42.1-10.22.45.254<br>
+    * *</p>
     *
     * @param path
     * @return
     */
-  def loadArea(path: String): AreaTool = {
+  def loadAreaInfo(path: String): Array[AreaInfo] = {
     import scala.collection.JavaConversions._
     val yamlEntry = YamlWrapper
       .loadYamlAsLinkedHashMap(path)
       .asInstanceOf[util.LinkedHashMap[String, util.LinkedHashMap[String, Object]]]
-    val areas: List[AreaInfo] = yamlEntry
+    yamlEntry
       .flatMap(m => {
         val areaName = castString(m._1, "").trim
         val areaCode = castString(m._2("area-code"), "").trim
@@ -52,9 +52,18 @@ object AreaUtils {
             })
         }
       })
-      .toList
-      .sortBy(_.startIpNumber) //根据startIpNumnber从小到大排序
-    AreaTool(areas)
+      .toArray
+  }
+
+  /**
+    * @see #loadAreaInfo(String)
+    *
+    * @param path
+    * @return
+    */
+  def loadArea(path: String): AreaTool = {
+    val areas = loadAreaInfo(path)
+    loadArea(areas)
   }
 
   /**
@@ -63,9 +72,17 @@ object AreaUtils {
     * @return
     */
   def loadArea(areaInfoList: util.ArrayList[AreaInfo]): AreaTool = {
-    import scala.collection.JavaConversions._
-    val areas = areaInfoList.toList.sortBy(_.startIpNumber)
-    AreaTool(areas)
+    loadArea(areaInfoList.toArray(Array[AreaInfo]()))
+  }
+
+  /**
+    * 加载区域配置,会自动根据startIpNumnber从小到大排序
+    * @param areas
+    * @return
+    */
+  def loadArea(areas: Array[AreaInfo]): AreaTool = {
+    //根据startIpNumnber从小到大排序
+    AreaTool(areas.sortBy(_.startIpNumber))
   }
 
   private def castString(o: Object, d: String): String = {
@@ -75,14 +92,9 @@ object AreaUtils {
       o.toString
     }
   }
-
-  def main(args: Array[String]): Unit = {
-    val at = loadArea("C:\\Users\\admin\\Desktop\\area.yml")
-    println(at.binarySearch("10.22.69.21"))
-  }
 }
 
-case class AreaTool(sortedAreaList: List[AreaInfo]) {
+case class AreaTool(sortedAreas: Array[AreaInfo]) {
 
   /**
     * 根据ip查找区域信息
@@ -91,7 +103,7 @@ case class AreaTool(sortedAreaList: List[AreaInfo]) {
     */
   def search(ip: String): Option[AreaInfo] = {
     val ipNumber = IpUtils.ipToNum(ip)
-    sortedAreaList.find(a => a.startIpNumber <= ipNumber && a.endIpNumber >= ipNumber)
+    sortedAreas.find(a => a.startIpNumber <= ipNumber && a.endIpNumber >= ipNumber)
   }
 
   /**
@@ -103,10 +115,10 @@ case class AreaTool(sortedAreaList: List[AreaInfo]) {
   def binarySearch(ip: String): Option[AreaInfo] = {
     val ipNumber = IpUtils.ipToNum(ip)
     var start = 0
-    var end = sortedAreaList.length - 1
+    var end = sortedAreas.length - 1
     while (start <= end) {
       val mid = (end + start) / 2
-      val midAreaInfo = sortedAreaList(mid)
+      val midAreaInfo = sortedAreas(mid)
       if (midAreaInfo.startIpNumber <= ipNumber
           && midAreaInfo.endIpNumber >= ipNumber) {
         return Some(midAreaInfo)

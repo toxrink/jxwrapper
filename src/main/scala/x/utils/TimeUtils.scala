@@ -29,23 +29,23 @@ object TimeUtils {
   }
 
   /**
-   * 格式化成yyyyMMddHHmmSS
+   * 格式化成yyyyMMddHHmmss
    *
    * @param date 格式化对象
    * @return
    */
   def format1(date: Date): String = {
-    format(date, "yyyyMMddHHmmSS")
+    format(date, "yyyyMMddHHmmss")
   }
 
   /**
-   * 格式化成yyyy-MM-dd HH:mm:SS
+   * 格式化成yyyy-MM-dd HH:mm:ss
    *
    * @param date 格式化对象
    * @return
    */
   def format2(date: Date): String = {
-    format(date, "yyyy-MM-dd HH:mm:SS")
+    format(date, "yyyy-MM-dd HH:mm:ss")
   }
 
   /**
@@ -71,7 +71,7 @@ object TimeUtils {
    * @return
    */
   def parese1(time: String): Date = {
-    parese(time, "yyyyMMddHHmmSS")
+    parese(time, "yyyyMMddHHmmss")
   }
 
   /**
@@ -81,7 +81,7 @@ object TimeUtils {
    * @return
    */
   def parese2(time: String): Date = {
-    parese(time, "yyyy-MM-dd HH:mm:SS")
+    parese(time, "yyyy-MM-dd HH:mm:ss")
   }
 
   /**
@@ -94,7 +94,7 @@ object TimeUtils {
   }
 
   /**
-   * 获取时间戳 yyyyMMddHHmmSS
+   * 获取时间戳 yyyyMMddHHmmss
    *
    * @return
    */

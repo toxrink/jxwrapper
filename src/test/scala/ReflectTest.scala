@@ -2,10 +2,11 @@ import x.common.annotation.ConfigValue
 import x.utils.ReflectUtils
 
 /**
- * Created by xw on 2019/8/29.
- */
+  * Created by xw on 2019/8/29.
+  */
 object ReflectTest {
 
+  @SerialVersionUID(1L)
   class HelloWorld {
     @ConfigValue
     val dataType: String = ""
@@ -35,14 +36,22 @@ object ReflectTest {
     val shards: Array[String] = null
 
     override def toString: String = {
-      "Hw [dataType=" + dataType + ", esBatchSize=" + esBatchSize + ", esYml=" + esYml + ", index=" + index + ", indexType=" + indexType + ", password=" + password + ", shards=" + shards.mkString(",") + ", timeValue=" + timeValue + ", username=" + username + "]"
+      "Hw [dataType=" + dataType + ", esBatchSize=" + esBatchSize + ", esYml=" + esYml + ", index=" + index + ", indexType=" + indexType + ", password=" + password + ", shards=" + shards
+        .mkString(",") + ", timeValue=" + timeValue + ", username=" + username + "]"
     }
   }
 
   def main(args: Array[String]): Unit = {
-    val h = new HelloWorld
-    import scala.collection.JavaConversions._
-    ReflectUtils.wrapObject(h).injectConfigValue(Map("dataType" -> "Test-Data"))
-    ReflectUtils.printConfigValue(h)
+//    val h = new HelloWorld
+//    import scala.collection.JavaConversions._
+//    ReflectUtils.wrapObject(h).injectConfigValue(Map("dataType" -> "Test-Data"))
+//    ReflectUtils.printConfigValue(h)
+
+    val i = new Integer(1)
+
+    val hb = ReflectUtils.serializeObject(i)
+    println(hb)
+    val h2: Integer = ReflectUtils.deserializeObject(hb)
+    println(h2)
   }
 }

@@ -1,10 +1,12 @@
 package x.utils
 
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, IOException, ObjectInputStream, ObjectOutputStream}
 import java.lang.reflect.Field
 import java.util
 import java.util.function.Predicate
 import java.util.stream.Collectors
 
+import org.apache.commons.io.IOUtils
 import org.apache.commons.lang.StringUtils
 import x.common.annotation.{ConfigValue, InjectValue}
 
@@ -153,6 +155,36 @@ object ReflectUtils {
     */
   def newInstance[T](clazz: Class[_], parameterTypes: Array[Class[_]], initargs: Array[Object]): T = {
     clazz.getConstructor(parameterTypes: _*).newInstance(initargs: _*).asInstanceOf[T]
+  }
+
+  /**
+    * 对象序列化
+    * @param obj 序列化对象
+    * @return
+    */
+  def serializeObject(obj: Object): Array[Byte] = {
+    val byteArrayOutputStream = new ByteArrayOutputStream()
+    val objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)
+    objectOutputStream.writeObject(obj)
+    val ret = byteArrayOutputStream.toByteArray()
+    IOUtils.closeQuietly(objectOutputStream)
+    IOUtils.closeQuietly(byteArrayOutputStream)
+    ret
+  }
+
+  /**
+    * 对象方序列化
+    * @param data 数据
+    * @tparam T 对象类
+    * @return
+    */
+  def deserializeObject[T](data: Array[Byte]): T = {
+    val in = new ByteArrayInputStream(data)
+    val oin = new ObjectInputStream(in)
+    val ret = oin.readObject()
+    IOUtils.closeQuietly(oin)
+    IOUtils.closeQuietly(in)
+    ret.asInstanceOf[T]
   }
 
   /**

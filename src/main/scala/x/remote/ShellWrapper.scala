@@ -9,8 +9,8 @@ import x.os.CmdWrapper
 import x.utils.{JxUtils, TimeUtils}
 
 /**
- * Created by xw on 2019/8/29.
- */
+  * Created by xw on 2019/8/29.
+  */
 object ShellWrapper {
   private val LOG = JxUtils.getLogger(ShellWrapper.getClass)
 
@@ -19,14 +19,15 @@ object ShellWrapper {
   }
 
   /**
-   * 远程文件压缩
-   *
-   * @param hostInfo host信息
-   * @param remote   远程目录
-   * @return
-   */
+    * 远程文件压缩
+    *
+    * @param hostInfo host信息
+    * @param remote   远程目录
+    * @return
+    */
   def zipRemote(hostInfo: HostInfo, remote: String): String = {
-    val filePath = (if (remote.endsWith("/")) remote.substring(0, remote.length() - 1) else remote) + "_" + TimeUtils.format1(new Date()) + ".zip"
+    val filePath = (if (remote.endsWith("/")) remote.substring(0, remote.length() - 1) else remote) + "_" + TimeUtils
+      .format1(new Date()) + ".zip"
     val home = remote.substring(0, remote.lastIndexOf("/"))
     val name = remote.substring(remote.lastIndexOf("/"))
     shell(hostInfo, "cd " + home + ";zip -r " + filePath + " ." + name, logOut)
@@ -34,12 +35,12 @@ object ShellWrapper {
   }
 
   /**
-   * 远程zip文件解压
-   *
-   * @param hostInfo host信息
-   * @param remote   远程zip文件路径
-   * @return
-   */
+    * 远程zip文件解压
+    *
+    * @param hostInfo host信息
+    * @param remote   远程zip文件路径
+    * @return
+    */
   def unZipRemote(hostInfo: HostInfo, remote: String): String = {
     val home = remote.substring(0, remote.lastIndexOf("/"))
     val name = remote.substring(remote.lastIndexOf("/"))
@@ -49,12 +50,22 @@ object ShellWrapper {
   }
 
   /**
-   * shell命令执行
-   *
-   * @param hostInfo host信息
-   * @param cmd      命令
-   * @param log      输入流处理
-   */
+    * shell命令执行
+    *
+    * @param hostInfo host信息
+    * @param cmd      命令
+    */
+  def shell(hostInfo: HostInfo, cmd: String): Unit = {
+    shell(hostInfo, cmd, null)
+  }
+
+  /**
+    * shell命令执行
+    *
+    * @param hostInfo host信息
+    * @param cmd      命令
+    * @param log      输入流处理
+    */
   def shell(hostInfo: HostInfo, cmd: String, log: LogOutput): Unit = {
     var session: SessionWrapper[ChannelExec] = null
     var exec: ChannelExec = null
@@ -67,25 +78,27 @@ object ShellWrapper {
       exec.setErrStream(System.err)
       exec.connect()
       in = exec.getInputStream
-      val tmp = Array.fill[Byte](1024)(0)
-      var run = true
-      var index = 0
-      while (run) {
-        var run2 = true
-        while (run2 && in.available() > 0) {
-          index = in.read(tmp, 0, 1024)
-          if (index < 0) {
-            run2 = false
+      if (null != log) {
+        val tmp = Array.fill[Byte](1024)(0)
+        var run = true
+        var index = 0
+        while (run) {
+          var run2 = true
+          while (run2 && in.available() > 0) {
+            index = in.read(tmp, 0, 1024)
+            if (index < 0) {
+              run2 = false
+            }
+            log.apply(new String(tmp, 0, index))
           }
-          log.apply(new String(tmp, 0, index))
-        }
-        if (exec.isClosed) {
-          if (in.available() < 0) {
-            log.apply("exit-status: " + exec.getExitStatus)
-            run = false
+          if (exec.isClosed) {
+            if (in.available() < 0) {
+              log.apply("exit-status: " + exec.getExitStatus)
+              run = false
+            }
           }
+          CmdWrapper.sleep(1000)
         }
-        CmdWrapper.sleep(1000)
       }
       exec.disconnect()
     } catch {

@@ -1,17 +1,15 @@
 package x.remote;
 
-import java.io.File;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
-
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
 import x.utils.JxUtils;
+
+import java.io.File;
 
 public final class SftpWrapper {
     private static final Log LOG = JxUtils.getLogger(SftpWrapper.class);
@@ -20,7 +18,7 @@ public final class SftpWrapper {
      * 远程复制文件
      *
      * @param sftpInfo sftp信息
-     * @return
+     * @return 返回是否成功
      */
     public static boolean scp(SftpInfo sftpInfo) {
         SessionWrapper<ChannelSftp> session = null;
@@ -44,7 +42,7 @@ public final class SftpWrapper {
      *
      * @param local  本地文件路径
      * @param remote 远程保存路径
-     * @param sftp
+     * @param sftp   连接客户端
      * @throws SftpException
      * @throws JSchException
      */
@@ -65,7 +63,7 @@ public final class SftpWrapper {
      * 创建远程目录
      *
      * @param remote 远程目录路径
-     * @param sftp   连接
+     * @param sftp   连接客户端
      */
     public static void createRemoteDirectory(String remote, ChannelSftp sftp) {
         if (!isRemoteDirectoryExist(remote, sftp)) {
@@ -87,8 +85,8 @@ public final class SftpWrapper {
      * 判断远程目录是否存在
      *
      * @param remote 远程目录路径
-     * @param sftp   连接
-     * @return
+     * @param sftp   连接客户端
+     * @return 返回是否成功
      */
     public static boolean isRemoteDirectoryExist(String remote, ChannelSftp sftp) {
         try {
@@ -110,7 +108,7 @@ public final class SftpWrapper {
      *
      * @param remote   远程目录路径
      * @param sftpInfo 连接
-     * @return
+     * @return 返回是否成功
      */
     public static boolean isRemoteDirectoryExist(String remote, SftpInfo sftpInfo) {
         SessionWrapper<ChannelSftp> session = null;
@@ -132,9 +130,33 @@ public final class SftpWrapper {
     /**
      * 判断远程文件是否存在
      *
+     * @param remote   远程目录路径
+     * @param sftpInfo 连接
+     * @return 返回是否存在
+     */
+    public static boolean isRemoteExist(String remote, SftpInfo sftpInfo) {
+        SessionWrapper<ChannelSftp> session = null;
+        ChannelSftp sftp = null;
+        boolean exist = false;
+        try {
+            session = new SessionWrapper<ChannelSftp>(sftpInfo);
+            sftp = session.openChannel("sftp");
+            sftp.connect();
+            exist = SftpWrapper.isRemoteExist(remote, sftp);
+        } catch (JSchException e) {
+            LOG.error("", e);
+        } finally {
+            IOUtils.closeQuietly(session);
+        }
+        return exist;
+    }
+
+    /**
+     * 判断远程文件是否存在
+     *
      * @param remote 远程目录路径
-     * @param sftp   连接
-     * @return
+     * @param sftp   连接客户端
+     * @return 返回是否存在
      */
     public static boolean isRemoteExist(String remote, ChannelSftp sftp) {
         try {
@@ -155,7 +177,7 @@ public final class SftpWrapper {
      * 下载文件
      *
      * @param sftpInfo 联系信息
-     * @return
+     * @return 返回是否成功
      */
     public static boolean get(SftpInfo sftpInfo) {
         SessionWrapper<ChannelSftp> session = null;
@@ -179,7 +201,7 @@ public final class SftpWrapper {
      *
      * @param local  本地保存路径
      * @param remote 远程文件路径
-     * @param sftp
+     * @param sftp   连接客户端
      */
     public static void download(String local, String remote, ChannelSftp sftp) {
         download(local, remote, -1, sftp);

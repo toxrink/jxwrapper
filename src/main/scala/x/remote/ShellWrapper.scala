@@ -1,7 +1,7 @@
 package x.remote
 
 import java.io.InputStream
-import java.util.Date
+import java.util.{Date, Properties}
 
 import com.jcraft.jsch.ChannelExec
 import org.apache.commons.io.IOUtils
@@ -55,7 +55,7 @@ object ShellWrapper {
     * @param hostInfo host信息
     * @param cmd      命令
     */
-  def shell(hostInfo: HostInfo, cmd: String): Unit = {
+  def shell(hostInfo: HostInfo, cmd: String): Boolean = {
     shell(hostInfo, cmd, null)
   }
 
@@ -66,12 +66,25 @@ object ShellWrapper {
     * @param cmd      命令
     * @param log      输入流处理
     */
-  def shell(hostInfo: HostInfo, cmd: String, log: LogOutput): Unit = {
+  def shell(hostInfo: HostInfo, cmd: String, log: LogOutput): Boolean = {
+    shell(hostInfo, cmd, log, null)
+  }
+
+  /**
+    * shell命令执行
+    *
+    * @param hostInfo host信息
+    * @param cmd 命令
+    * @param log 输入流处理
+    * @param option 连接配置
+    * @return
+    */
+  def shell(hostInfo: HostInfo, cmd: String, log: LogOutput, option: Properties): Boolean = {
     var session: SessionWrapper[ChannelExec] = null
     var exec: ChannelExec = null
     var in: InputStream = null
     try {
-      session = new SessionWrapper[ChannelExec](hostInfo)
+      session = new SessionWrapper[ChannelExec](hostInfo, option)
       exec = session.openChannel("exec")
       LOG.info(cmd)
       exec.setCommand(cmd)
@@ -101,8 +114,11 @@ object ShellWrapper {
         }
       }
       exec.disconnect()
+      true
     } catch {
-      case e: Throwable => LOG.error("", e)
+      case e: Throwable =>
+        LOG.error("", e)
+        false
     } finally {
       IOUtils.closeQuietly(in)
       IOUtils.closeQuietly(session)

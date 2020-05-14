@@ -1,8 +1,10 @@
 package x.utils
 
-import java.security.MessageDigest
-import java.util.{Base64, UUID}
+import java.security.{MessageDigest, SecureRandom}
+import java.util.UUID
 
+import javax.crypto.{Cipher, KeyGenerator}
+import org.apache.commons.codec.binary.Base64
 import x.self.JxConst
 
 /**
@@ -93,11 +95,7 @@ object StrUtils {
     * @return
     */
   def encodeBase64(b: Array[Byte]): String = {
-    if (null == b) {
-      ""
-    } else {
-      Base64.getEncoder.encodeToString(b)
-    }
+    Base64.encodeBase64URLSafeString(b)
   }
 
   /**
@@ -107,11 +105,7 @@ object StrUtils {
     * @return
     */
   def encodeBase64(s: String): String = {
-    if (null == s) {
-      ""
-    } else {
-      encodeBase64(s.getBytes(JxConst.UTF8))
-    }
+    Base64.encodeBase64URLSafeString(s.getBytes(JxConst.UTF8))
   }
 
   /**
@@ -121,25 +115,7 @@ object StrUtils {
     * @return
     */
   def decodeBase64(b: Array[Byte]): String = {
-    if (null == b) {
-      ""
-    } else {
-      new String(Base64.getDecoder.decode(b), JxConst.UTF8)
-    }
-  }
-
-  /**
-    * base64解码
-    *
-    * @param s 字符串
-    * @return
-    */
-  def decodeBase64(s: String): String = {
-    if (null == s) {
-      ""
-    } else {
-      decodeBase64(s.getBytes(JxConst.UTF8))
-    }
+    new String(Base64.decodeBase64(b))
   }
 
   /**
@@ -169,6 +145,12 @@ object StrUtils {
       .mkString
   }
 
+  /**
+    * 获取环境变量配置
+    *
+    * @param t 格式 ${key:default}
+    * @return
+    */
   def getEnvironmentValue(t: String): String = {
     if (t.startsWith("${") && t.endsWith("}")) {
       val index = t.indexOf(":")
@@ -193,5 +175,40 @@ object StrUtils {
     } else {
       t
     }
+  }
+
+  /**
+    * des加密
+    *
+    * @param key 秘钥
+    * @param value 需要加密的字符串
+    * @return 返回base64字符串
+    */
+  def encodeDES(key: String, value: String): String = {
+    val cipher = desCipher(Cipher.ENCRYPT_MODE, key)
+    encodeBase64(cipher.doFinal(value.getBytes(JxConst.UTF8)))
+  }
+
+  /**
+    * des解密
+    *
+    * @param key 秘钥
+    * @param value encodeDES方法返回的字符串
+    * @return
+    */
+  def decodeDES(key: String, value: String): String = {
+    val cipher = desCipher(Cipher.DECRYPT_MODE, key)
+    val d64 = Base64.decodeBase64(value.getBytes())
+    new String(cipher.doFinal(d64))
+  }
+
+  private def desCipher(mode: Int, dkey: String): Cipher = {
+    val cipher = Cipher.getInstance("DES")
+    val key = KeyGenerator.getInstance("DES")
+    val random = SecureRandom.getInstance("SHA1PRNG")
+    random.setSeed(dkey.getBytes(JxConst.UTF8S))
+    key.init(random)
+    cipher.init(mode, key.generateKey())
+    cipher
   }
 }

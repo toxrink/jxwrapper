@@ -16,6 +16,8 @@ object ShellWrapper {
 
   private val logOut = new LogOutput {
     override def apply(obj: Object): Unit = LOG.info(obj)
+
+    override def stop(): Boolean = false
   }
 
   /**
@@ -89,15 +91,16 @@ object ShellWrapper {
       LOG.info(cmd)
       exec.setCommand(cmd)
       exec.setErrStream(System.err)
+      exec.setPty(true)
       exec.connect()
       in = exec.getInputStream
       if (null != log) {
         val tmp = Array.fill[Byte](1024)(0)
         var run = true
         var index = 0
-        while (run) {
+        while (run && !log.stop()) {
           var run2 = true
-          while (run2 && in.available() > 0) {
+          while (run2 && in.available() > 0 && !log.stop()) {
             index = in.read(tmp, 0, 1024)
             if (index < 0) {
               run2 = false
@@ -105,29 +108,29 @@ object ShellWrapper {
             log.apply(new String(tmp, 0, index))
           }
           if (exec.isClosed) {
-            if (in.available() < 0) {
-              log.apply("exit-status: " + exec.getExitStatus)
-              run = false
-            }
+            run = false
           }
           CmdWrapper.sleep(1000)
         }
       }
-      exec.disconnect()
       true
     } catch {
       case e: Throwable =>
         LOG.error("", e)
         false
     } finally {
+      if (!exec.isClosed) {
+        exec.sendSignal("2")
+      }
       IOUtils.closeQuietly(in)
       IOUtils.closeQuietly(session)
     }
   }
 
-  @FunctionalInterface
   trait LogOutput {
     def apply(obj: Object)
+
+    def stop(): Boolean
   }
 
 }

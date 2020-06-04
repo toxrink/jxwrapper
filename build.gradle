@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'jxwrapper'
-version '0.10.2c'
+version '0.10.2c1'
 
 sourceCompatibility = 1.8
 

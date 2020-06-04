@@ -54,8 +54,13 @@ public final class SftpWrapper {
                 upload(f.getAbsolutePath(), remote + "/" + file.getName(), sftp);
             }
         } else {
-            LOG.info(sftp.getSession().getHost() + " FETCH " + local);
-            sftp.put(local, remote);
+            if (file.exists()) {
+                LOG.info(sftp.getSession().getHost() + " FETCH " + file.getAbsolutePath());
+                sftp.put(file.getAbsolutePath(), remote);
+            } else {
+                throw new JSchException(local + " file not exists");
+            }
+
         }
     }
 

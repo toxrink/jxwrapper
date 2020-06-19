@@ -181,7 +181,7 @@ public final class SftpWrapper {
     /**
      * 下载文件
      *
-     * @param sftpInfo 联系信息
+     * @param sftpInfo 连接信息
      * @return 返回是否成功
      */
     public static boolean get(SftpInfo sftpInfo) {
@@ -191,14 +191,13 @@ public final class SftpWrapper {
             session = new SessionWrapper<ChannelSftp>(sftpInfo);
             sftp = session.openChannel("sftp");
             sftp.connect();
-            download(sftpInfo.getLocal(), sftpInfo.getRemote(), sftp);
+            return download(sftpInfo.getLocal(), sftpInfo.getRemote(), sftp);
         } catch (JSchException e) {
             LOG.error("", e);
             return false;
         } finally {
             IOUtils.closeQuietly(session);
         }
-        return true;
     }
 
     /**
@@ -207,16 +206,17 @@ public final class SftpWrapper {
      * @param local  本地保存路径
      * @param remote 远程文件路径
      * @param sftp   连接客户端
+     * @return
      */
-    public static void download(String local, String remote, ChannelSftp sftp) {
-        download(local, remote, -1, sftp);
+    public static boolean download(String local, String remote, ChannelSftp sftp) {
+        return download(local, remote, -1, sftp);
     }
 
     @SuppressWarnings("unchecked")
-    public static void download(String local, String remote, int base, ChannelSftp sftp) {
+    public static boolean download(String local, String remote, int base, ChannelSftp sftp) {
         if (!isRemoteExist(remote, sftp)) {
-            LOG.info(remote + " does not exist");
-            return;
+            LOG.warn(remote + " does not exist");
+            return false;
         }
         if (base == -1) {
             base = remote.lastIndexOf("/");
@@ -237,7 +237,9 @@ public final class SftpWrapper {
             }
         } catch (SftpException e) {
             LOG.error("", e);
+            return false;
         }
+        return true;
     }
 
 //	public static void main(String[] args) {

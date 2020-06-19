@@ -137,7 +137,7 @@ object StrUtils {
   def camelToUnderLine(s: String): String = {
     s.map(c => {
         if (c > 64 && c < 91) {
-          "_" + c
+          "_" + (c + 32).toChar
         } else {
           c
         }

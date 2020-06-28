@@ -119,6 +119,16 @@ object StrUtils {
   }
 
   /**
+    * base64解码
+    *
+    * @param s 字符串
+    * @return
+    */
+  def decodeBase64(s: String): String = {
+    new String(Base64.decodeBase64(s))
+  }
+
+  /**
     * 下划线转驼峰
     *
     * @param s 字符串

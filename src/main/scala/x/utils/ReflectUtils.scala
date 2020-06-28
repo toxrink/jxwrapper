@@ -26,9 +26,9 @@ object ReflectUtils {
     val wrapper = wrapObject(obj)
     val valueList = wrapper.getConfigValueList
       .map(v => {
-        val cv = v.getAnnotation(classOf[ConfigValue])
+        val cv               = v.getAnnotation(classOf[ConfigValue])
         var tmpValue: Object = null
-        val nameList = new util.ArrayList[String](1 + cv.aliases().length)
+        val nameList         = new util.ArrayList[String](1 + cv.aliases().length)
         try {
           v.getType.getSimpleName match {
             case "String" | "int" | "long" | "float" | "double" | "short" | "boolean" | "ImmutableList" =>
@@ -164,7 +164,7 @@ object ReflectUtils {
     */
   def serializeObject(obj: Object): Array[Byte] = {
     val byteArrayOutputStream = new ByteArrayOutputStream()
-    val objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)
+    val objectOutputStream    = new ObjectOutputStream(byteArrayOutputStream)
     objectOutputStream.writeObject(obj)
     val ret = byteArrayOutputStream.toByteArray()
     IOUtils.closeQuietly(objectOutputStream)
@@ -179,7 +179,7 @@ object ReflectUtils {
     * @return
     */
   def deserializeObject[T](data: Array[Byte]): T = {
-    val in = new ByteArrayInputStream(data)
+    val in  = new ByteArrayInputStream(data)
     val oin = new ObjectInputStream(in)
     val ret = oin.readObject()
     IOUtils.closeQuietly(oin)
@@ -211,10 +211,12 @@ object ReflectUtils {
     private var extMap: util.Map[Class[_], GetValueExtFunction] =
       new util.HashMap[Class[_], ReflectUtils.GetValueExtFunction](0)
 
-    private def getValue[T](context: util.Map[String, _],
-                            names: Array[String],
-                            defVal: String,
-                            con: String => T): Option[T] = {
+    private def getValue[T](
+        context: util.Map[String, _],
+        names: Array[String],
+        defVal: String,
+        con: String => T
+    ): Option[T] = {
       for (key <- names) {
         if (!StrUtils.isEmpty(key)) {
           val ret = context.get(key)
@@ -371,8 +373,8 @@ object ReflectUtils {
     def injectConfigValue(context: util.Map[String, _], ext: util.Map[Class[_], GetValueExtFunction]): ClassWrapper = {
       import scala.collection.JavaConversions._
       getConfigValueList(obj.getClass).foreach(field => {
-        val cv = getAnnotation(field)
-        val sp = cv.sp()
+        val cv                   = getAnnotation(field)
+        val sp                   = cv.sp()
         var names: Array[String] = null
         try {
           names = Array.fill[String](2 + cv.aliases().length)(null)

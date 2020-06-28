@@ -20,8 +20,8 @@ object IpUtils {
 
   def ipToNum(ip: String): Long = {
     val ipArr = ip.split("\\.")
-    val sb = new StringBuffer(8)
-    var num = -1l
+    val sb    = new StringBuffer(8)
+    var num   = -1L
     try {
       for (i <- ipArr) {
         sb.append(toHex(Integer.valueOf(i.trim())))
@@ -41,7 +41,7 @@ object IpUtils {
     val tmp2 = new StringBuffer(15)
 
     val chars = tmp.toString.toCharArray
-    var i = 0
+    var i     = 0
     while (i < chars.length) {
       tmp.setLength(0)
       tmp.insert(0, chars(i))
@@ -59,19 +59,19 @@ object IpUtils {
   def isInRange(ip: String, startIp: String, endIp: String): Boolean = {
     val ipNum = ipToNum(ip)
     val start = ipToNum(startIp)
-    val end = ipToNum(endIp)
+    val end   = ipToNum(endIp)
     isInRange(ipNum, start, end)
   }
 
   def isInRange(ip: Long, startIp: String, endIp: String): Boolean = {
     val start = ipToNum(startIp)
-    val end = ipToNum(endIp)
+    val end   = ipToNum(endIp)
     isInRange(ip, start, end)
   }
 
   def isInRange(ip: Long, startIp: Long, endIp: Long): Boolean = {
     val start = Math.min(startIp, endIp)
-    val end = Math.max(startIp, endIp)
+    val end   = Math.max(startIp, endIp)
     ip >= start && ip <= end
   }
 

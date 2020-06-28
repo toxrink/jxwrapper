@@ -6,8 +6,8 @@ import java.util
 import scala.beans.BeanProperty
 
 /**
- * Created by xw on 2019/8/29.
- */
+  * Created by xw on 2019/8/29.
+  */
 class TableInfo() {
   @BeanProperty
   var table: String = ""
@@ -23,7 +23,7 @@ class TableInfo() {
 
   def getColumnsByType(types: Int): Array[String] = {
     val list = new util.ArrayList[String](columns.length)
-    var i = 0
+    var i    = 0
     while (i < columns.length) {
       if (columnTypes(i) == types) {
         list.add(columns(i))
@@ -58,6 +58,7 @@ class TableInfo() {
   }
 
   override def toString: String = {
-    s"TableInfo [\n\ttable=$table, \n\tcolumnTypes=${util.Arrays.toString(columnTypes)}, \n\tcolumnWithTypeMap=$columnWithTypeMap, \n\tcolumns=${util.Arrays.toString(columns.asInstanceOf[Array[Object]])}\n]"
+    s"TableInfo [\n\ttable=$table, \n\tcolumnTypes=${util.Arrays.toString(columnTypes)}, \n\tcolumnWithTypeMap=$columnWithTypeMap, \n\tcolumns=${util.Arrays
+      .toString(columns.asInstanceOf[Array[Object]])}\n]"
   }
 }

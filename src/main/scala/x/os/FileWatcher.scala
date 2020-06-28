@@ -4,6 +4,7 @@ package x.os
   * Created by xw on 2019/8/1.
   */
 trait FileWatcher {
+
   /**
     * 数据处理方法
     *

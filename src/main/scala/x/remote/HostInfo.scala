@@ -6,6 +6,7 @@ import scala.beans.BeanProperty
   * Created by xw on 2019/8/29.
   */
 class HostInfo {
+
   /**
     * 服务器地址
     */

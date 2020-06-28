@@ -6,12 +6,12 @@ import java.util.Properties
 import com.jcraft.jsch.{Channel, JSch, JSchException}
 
 /**
- * Created by xw on 2019/8/29.
- */
+  * Created by xw on 2019/8/29.
+  */
 @throws[JSchException]
 class SessionWrapper[T <: Channel](hostInfo: HostInfo, option: Properties) extends Closeable {
 
-  private val jsch = new JSch()
+  private val jsch    = new JSch()
   private val session = jsch.getSession(hostInfo.getUsername, hostInfo.getHost)
   session.setPassword(hostInfo.getPassword)
   session.setConfig("StrictHostKeyChecking", "no")

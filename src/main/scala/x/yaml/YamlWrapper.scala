@@ -22,9 +22,9 @@ object YamlWrapper {
     if (log.isDebugEnabled) {
       log.debug("load yaml file " + path)
     }
-    val yaml = new Yaml()
+    val yaml   = new Yaml()
     val reader = Source.fromFile(path, charset).bufferedReader()
-    val as = yaml.loadAs(reader, ctype)
+    val as     = yaml.loadAs(reader, ctype)
     reader.close()
     as
   }

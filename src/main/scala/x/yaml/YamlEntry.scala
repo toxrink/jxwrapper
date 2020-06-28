@@ -16,7 +16,7 @@ class YamlEntry(yml: util.LinkedHashMap[String, Object]) {
       if (null == yml2) {
         asInstanceOf[T]
       } else {
-        val yml3 = yml2.asInstanceOf[util.LinkedHashMap[String, Object]]
+        val yml3  = yml2.asInstanceOf[util.LinkedHashMap[String, Object]]
         val keys2 = Array.fill[String](keys.length - 1)("")
         System.arraycopy(keys, 1, keys2, 0, keys2.length)
         getValue(yml3, keys2).asInstanceOf[T]

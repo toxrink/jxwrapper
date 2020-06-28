@@ -46,7 +46,7 @@ object ShellWrapper {
   def unZipRemote(hostInfo: HostInfo, remote: String): String = {
     val home = remote.substring(0, remote.lastIndexOf("/"))
     val name = remote.substring(remote.lastIndexOf("/"))
-    val dir = name.substring(0, name.lastIndexOf("."))
+    val dir  = name.substring(0, name.lastIndexOf("."))
     shell(hostInfo, "cd " + home + ";unzip ." + name + " -d ." + dir, defaultLogOut)
     home + dir
   }
@@ -83,8 +83,8 @@ object ShellWrapper {
     */
   def shell(hostInfo: HostInfo, cmd: String, log: LogOutput, option: Properties): Boolean = {
     var session: SessionWrapper[ChannelExec] = null
-    var exec: ChannelExec = null
-    var in: InputStream = null
+    var exec: ChannelExec                    = null
+    var in: InputStream                      = null
     try {
       session = new SessionWrapper[ChannelExec](hostInfo, option)
       exec = session.openChannel("exec")
@@ -95,8 +95,8 @@ object ShellWrapper {
       exec.connect()
       in = exec.getInputStream
       if (null != log) {
-        val tmp = Array.fill[Byte](1024)(0)
-        var run = true
+        val tmp   = Array.fill[Byte](1024)(0)
+        var run   = true
         var index = 0
         while (run && !log.stop()) {
           var run2 = true
@@ -136,11 +136,12 @@ object ShellWrapper {
     */
   def tailFile(hostInfo: HostInfo, path: String, param: String, log: LogOutput): Unit = {
     var session: SessionWrapper[ChannelExec] = null
-    var exec: ChannelExec = null
-    var in: InputStream = null
-    var buff: BufferedReader = null
+    var exec: ChannelExec                    = null
+    var in: InputStream                      = null
+    var buff: BufferedReader                 = null
     val cmd =
-      if (null != param) { "tail -f " + param + " " + path } else { "tail -f " + path }
+      if (null != param) { "tail -f " + param + " " + path }
+      else { "tail -f " + path }
     try {
       session = new SessionWrapper[ChannelExec](hostInfo, null)
       exec = session.openChannel("exec")

@@ -46,7 +46,8 @@ class JxProcess(process: Process) {
                       .append("-StdErr#")
                       .append(prefix)
                       .append(" : ")
-                      .append(l))
+                      .append(l)
+                  )
                 } else if (log.isDebugEnabled) {
                   log.debug(prefix + " : " + l)
                 }
@@ -63,7 +64,8 @@ class JxProcess(process: Process) {
                       .append("-StdIn#")
                       .append(prefix)
                       .append(" : ")
-                      .append(l))
+                      .append(l)
+                  )
                 } else if (log.isDebugEnabled) {
                   log.debug(prefix + " : " + l)
                 }
@@ -117,8 +119,8 @@ class JxProcess(process: Process) {
     * @return
     */
   def getLine(line: Int): String = {
-    val br = Source.fromInputStream(process.getInputStream, charset).bufferedReader()
-    var cd = line
+    val br  = Source.fromInputStream(process.getInputStream, charset).bufferedReader()
+    var cd  = line
     var ret = ""
     try {
       while (cd > 0) {

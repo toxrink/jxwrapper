@@ -107,7 +107,7 @@ object CmdWrapper {
   def zip(fileInfoList: util.List[FileInfo], prefix: String): File = {
     import scala.collection.JavaConversions._
     val zfile = File.createTempFile(prefix, ".zip")
-    val zout = new ZipArchiveOutputStream(zfile)
+    val zout  = new ZipArchiveOutputStream(zfile)
     for (fileInfo <- fileInfoList.toList) {
       val file = new File(fileInfo.getPath)
       if (file.exists()) {
@@ -130,17 +130,17 @@ object CmdWrapper {
     * @return
     */
   def unZip(filePath: String, outDir: String, encode: String): util.ArrayList[FileInfo] = {
-    val list = new util.ArrayList[FileInfo]()
+    val list                = new util.ArrayList[FileInfo]()
     var zip: ZipInputStream = null
-    var br: BufferedReader = null
+    var br: BufferedReader  = null
     try {
       val file = new File(filePath)
       zip = new ZipInputStream(new FileInputStream(file))
       br = new BufferedReader(new InputStreamReader(zip, encode))
-      var entity = zip.getNextEntry
-      var outFile: File = null
-      val ts = TimeUtils.getTimestamp
-      var fi: FileInfo = null
+      var entity                 = zip.getNextEntry
+      var outFile: File          = null
+      val ts                     = TimeUtils.getTimestamp
+      var fi: FileInfo           = null
       var fout: FileOutputStream = null
       while (entity != null && !entity.isDirectory) {
         outFile = new File(outDir + File.separator + ts + "_" + entity.getName)
@@ -171,20 +171,20 @@ object CmdWrapper {
     * @return
     */
   def unTarGzip(filePath: String, outDir: String, encode: String): util.ArrayList[FileInfo] = {
-    val list = new util.ArrayList[FileInfo]()
+    val list                       = new util.ArrayList[FileInfo]()
     var tar: TarArchiveInputStream = null
-    var br: BufferedReader = null
+    var br: BufferedReader         = null
     try {
-      val file = new File(filePath)
+      val file      = new File(filePath)
       val fileInput = new FileInputStream(file)
       val gzipInput = new GZIPInputStream(fileInput)
       tar = new TarArchiveInputStream(gzipInput)
       br = new BufferedReader(new InputStreamReader(tar, encode))
       var entity: TarArchiveEntry = tar.getNextTarEntry
-      val ts = TimeUtils.getTimestamp
-      var fi: FileInfo = null
-      var fout: FileOutputStream = null
-      var outFile: File = null
+      val ts                      = TimeUtils.getTimestamp
+      var fi: FileInfo            = null
+      var fout: FileOutputStream  = null
+      var outFile: File           = null
       while (entity != null && !entity.isDirectory) {
         outFile = new File(outDir + File.separator + ts + "_" + entity.getName)
         mkdirs(outFile.getParent)
@@ -214,17 +214,17 @@ object CmdWrapper {
     * @return
     */
   def unGzip(filePath: String, outDir: String, encode: String): util.ArrayList[FileInfo] = {
-    val list = new util.ArrayList[FileInfo]()
+    val list                       = new util.ArrayList[FileInfo]()
     var gzipInput: GZIPInputStream = null
-    var br: BufferedReader = null
+    var br: BufferedReader         = null
     try {
-      val file = new File(filePath)
+      val file      = new File(filePath)
       val fileInput = new FileInputStream(file)
       gzipInput = new GZIPInputStream(fileInput)
       br = new BufferedReader(new InputStreamReader(gzipInput, encode))
-      val ts = TimeUtils.getTimestamp
+      val ts         = TimeUtils.getTimestamp
       val unFileName = GzipUtils.getUncompressedFilename(file.getName)
-      val outFile = new File(outDir + File.separator + ts + "_" + unFileName)
+      val outFile    = new File(outDir + File.separator + ts + "_" + unFileName)
       mkdirs(outFile.getParent)
       val fout = new FileOutputStream(outFile)
       IOUtils.copy(br, fout, encode)

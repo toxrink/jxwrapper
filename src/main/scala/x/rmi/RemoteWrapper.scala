@@ -41,7 +41,7 @@ object RemoteWrapper {
         case _: Throwable =>
       }
       log.info(s"bind rmi service<$name> at $port")
-      val reg = LocateRegistry.createRegistry(port)
+      val reg     = LocateRegistry.createRegistry(port)
       val service = server.apply
       reg.bind(name, service)
     }

@@ -155,9 +155,9 @@ object StrUtils {
     if (t.startsWith("${") && t.endsWith("}")) {
       val index = t.indexOf(":")
       if (-1 != index) {
-        val key = t.substring(2, index)
+        val key   = t.substring(2, index)
         val value = t.substring(index + 1, t.length - 1)
-        val v1 = System.getenv.get(key)
+        val v1    = System.getenv.get(key)
         if (null == v1) {
           System.getProperty(key, value)
         } else {
@@ -165,7 +165,7 @@ object StrUtils {
         }
       } else {
         val key = t.substring(2, t.length - 2)
-        val v1 = System.getenv.get(key)
+        val v1  = System.getenv.get(key)
         if (null == v1) {
           System.getProperty(key)
         } else {
@@ -198,13 +198,13 @@ object StrUtils {
     */
   def decodeDES(key: String, value: String): String = {
     val cipher = desCipher(Cipher.DECRYPT_MODE, key)
-    val d64 = Base64.decodeBase64(value.getBytes())
+    val d64    = Base64.decodeBase64(value.getBytes())
     new String(cipher.doFinal(d64))
   }
 
   private def desCipher(mode: Int, dkey: String): Cipher = {
     val cipher = Cipher.getInstance("DES")
-    val key = KeyGenerator.getInstance("DES")
+    val key    = KeyGenerator.getInstance("DES")
     val random = SecureRandom.getInstance("SHA1PRNG")
     random.setSeed(dkey.getBytes(JxConst.UTF8S))
     key.init(random)

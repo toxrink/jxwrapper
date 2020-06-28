@@ -42,11 +42,11 @@ object AreaUtils {
           ipRanges
             .split(",")
             .map(ips => {
-              val ips1 = ips.split("-")
-              val startIp = ips1(0).trim
-              val endIp = if (ips1.length == 1) startIp else ips1(1).trim
+              val ips1          = ips.split("-")
+              val startIp       = ips1(0).trim
+              val endIp         = if (ips1.length == 1) startIp else ips1(1).trim
               val startIpNumber = IpUtils.ipToNum(startIp)
-              val endIpNumber = IpUtils.ipToNum(endIp)
+              val endIpNumber   = IpUtils.ipToNum(endIp)
 
               AreaInfo(areaName, areaCode, startIp, endIp, startIpNumber, endIpNumber)
             })
@@ -114,10 +114,10 @@ case class AreaTool(sortedAreas: Array[AreaInfo]) {
     */
   def binarySearch(ip: String): Option[AreaInfo] = {
     val ipNumber = IpUtils.ipToNum(ip)
-    var start = 0
-    var end = sortedAreas.length - 1
+    var start    = 0
+    var end      = sortedAreas.length - 1
     while (start <= end) {
-      val mid = (end + start) / 2
+      val mid         = (end + start) / 2
       val midAreaInfo = sortedAreas(mid)
       if (midAreaInfo.startIpNumber <= ipNumber
           && midAreaInfo.endIpNumber >= ipNumber) {

@@ -6,6 +6,7 @@ import org.yaml.snakeyaml.Yaml
 import x.utils.JxUtils
 
 import scala.io.Source
+import java.io.Reader
 
 /**
   * Created by xw on 2019/8/1.
@@ -40,6 +41,12 @@ object YamlWrapper {
 
   def loadAsYamlEntry(yml: util.LinkedHashMap[String, Object]): YamlEntry = {
     new YamlEntry(yml)
+  }
+
+  def loadAsYamlEntry(source: Reader): YamlEntry = {
+    val yaml = new Yaml()
+    val as   = yaml.loadAs(source, classOf[util.LinkedHashMap[String, Object]])
+    new YamlEntry(as)
   }
 
 }

@@ -155,7 +155,7 @@ object SftpWrapper {
     } finally {
       IOUtils.closeQuietly(session)
     }
-    return exist
+    exist
   }
 
   /**
@@ -178,7 +178,7 @@ object SftpWrapper {
         }
         LOG.error("", e)
     }
-    return true
+    true
   }
 
   /**

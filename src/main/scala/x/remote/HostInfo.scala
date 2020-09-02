@@ -17,7 +17,7 @@ class HostInfo {
     * 目标端口
     */
   @BeanProperty
-  var port: Int = 0
+  var port: Int = 22
 
   /**
     * 服务器连接账号

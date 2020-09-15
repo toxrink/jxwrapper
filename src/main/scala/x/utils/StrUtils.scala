@@ -184,7 +184,7 @@ object StrUtils {
           v1
         }
       } else {
-        val key = t.substring(2, t.length - 2)
+        val key = t.substring(2, t.length - 1)
         val v1 = System.getenv.get(key)
         if (null == v1) {
           System.getProperty(key)

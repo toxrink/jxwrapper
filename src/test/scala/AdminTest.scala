@@ -5,7 +5,7 @@ import x.database.AdminWrapper
   */
 object AdminTest {
   def main(args: Array[String]): Unit = {
-    import scala.jdk.CollectionConverters.ListHasAsScala
+    import scala.collection.JavaConverters._
     val admin = AdminWrapper.build(
       "org.apache.hive.jdbc.HiveDriver",
       "jdbc:hive2://vrv203:2181,vrv204:2181,vrv205:2181,vrv206:2181,vrv207:2181/vap;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2",

@@ -34,13 +34,15 @@ object ShellTest {
         sstop
       }
     }
-    new Thread(() => {
-      ShellWrapper.tailFile(
-        hostInfo,
-        "/var/log/vap-mp/agent-server.log",
-        "-n -5 ",
-        lo
-      )
+    new Thread(new Runnable {
+      override def run(): Unit = {
+        ShellWrapper.tailFile(
+          hostInfo,
+          "/var/log/vap-mp/agent-server.log",
+          "-n -5 ",
+          lo
+        )
+      }
     }).start()
 
     var i = 0

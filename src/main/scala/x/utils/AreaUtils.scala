@@ -27,12 +27,12 @@ object AreaUtils {
     * @return
     */
   def loadAreaInfo(path: String): Array[AreaInfo] = {
-    import scala.jdk.CollectionConverters.MapHasAsScala
+    import scala.collection.JavaConverters._
     val yamlEntry = YamlWrapper
       .loadYamlAsLinkedHashMap(path)
       .asInstanceOf[util.LinkedHashMap[String, util.LinkedHashMap[String, Object]]]
     yamlEntry.asScala
-      .flatMap[AreaInfo](m => {
+      .flatMap(m => {
         val areaName = castString(m._1, "").trim
         val areaCode = castString(m._2.get("area-code"), "").trim
         val ipRanges = castString(m._2.get("ip-ranges"), "")

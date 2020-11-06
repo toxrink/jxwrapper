@@ -153,22 +153,24 @@ object ShellWrapper {
       if (null != log) {
         in = exec.getInputStream
         buff = new BufferedReader(new InputStreamReader(in))
-        val logThread = new Thread(() => {
-          try {
-            var tmp: String = buff.readLine()
-            while (null != tmp && !log.stop()) {
-              log.apply(tmp)
-              tmp = buff.readLine()
-            }
-          } catch {
-            case e: InterruptedIOException =>
-              val msg = s"stop tail ${hostInfo.host}#$path"
-              LOG.info(msg)
-              if (LOG.isDebugEnabled) {
-                LOG.debug("", e)
+        val logThread = new Thread(new Runnable {
+          override def run(): Unit = {
+            try {
+              var tmp: String = buff.readLine()
+              while (null != tmp && !log.stop()) {
+                log.apply(tmp)
+                tmp = buff.readLine()
               }
-            case e: Throwable =>
-              LOG.error("", e)
+            } catch {
+              case e: InterruptedIOException =>
+                val msg = s"stop tail ${hostInfo.host}#$path"
+                LOG.info(msg)
+                if (LOG.isDebugEnabled) {
+                  LOG.debug("", e)
+                }
+              case e: Throwable =>
+                LOG.error("", e)
+            }
           }
         })
         logThread.start()

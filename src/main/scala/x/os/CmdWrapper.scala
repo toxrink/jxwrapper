@@ -106,7 +106,7 @@ object CmdWrapper {
     */
   @throws[IOException]
   def zip(fileInfoList: util.List[FileInfo], prefix: String): File = {
-    import scala.jdk.CollectionConverters.ListHasAsScala
+    import scala.collection.JavaConverters._
     val zfile = File.createTempFile(prefix, ".zip")
     val zout = new ZipArchiveOutputStream(zfile)
     for (fileInfo <- fileInfoList.asScala) {

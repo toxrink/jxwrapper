@@ -236,7 +236,7 @@ object SftpWrapper {
         if (attrs.isDir()) {
           new File(local + "/" + remote.substring(base)).mkdir()
           val list = sftp.ls(remote).asInstanceOf[java.util.Vector[sftp.LsEntry]]
-          import scala.jdk.CollectionConverters.ListHasAsScala
+          import scala.collection.JavaConverters._
           list.asScala.foreach((e: sftp.LsEntry) => {
             if (!e.getFilename().startsWith(".")) {
               LOG.info("FETCH " + remote)

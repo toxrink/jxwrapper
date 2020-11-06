@@ -5,7 +5,7 @@ import java.util
 
 import x.log.Xlog
 
-import scala.jdk.CollectionConverters.ListHasAsScala
+import scala.collection.JavaConverters._
 
 /**
   * Created by xw on 2019/8/29.

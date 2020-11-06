@@ -10,18 +10,18 @@ import x.yaml.YamlWrapper
 object AreaUtils {
 
   /**
-    * * 读取区域配置
-    * * <br>
-    * * yml格式如下:
-    * * <p>地区1:<br>
-    * * &nbsp;&nbsp;area-code: xxxxxxxxxx<br>
-    * * &nbsp;&nbsp;ip-ranges: 10.22.0.1-10.22.40.254,10.22.42.1-10.22.45.254<br>
-    * *</p>
-    * * ...
-    * * <p>地区n:<br>
-    * * &nbsp;&nbsp;area-code: xxxxxxxxxx<br>
-    * * &nbsp;&nbsp;ip-ranges: 10.22.0.1-10.22.40.254,10.22.42.1-10.22.45.254<br>
-    * *</p>
+    * 读取区域配置
+    * <br>
+    * yml格式如下:
+    * <p>地区1:<br>
+    * &nbsp;&nbsp;area-code: xxxxxxxxxx<br>
+    * &nbsp;&nbsp;ip-ranges: 10.22.0.1-10.22.40.254,10.22.42.1-10.22.45.254<br>
+    * </p>
+    * ...
+    * <p>地区n:<br>
+    * &nbsp;&nbsp;area-code: xxxxxxxxxx<br>
+    * &nbsp;&nbsp;ip-ranges: 10.22.0.1-10.22.40.254,10.22.42.1-10.22.45.254<br>
+    * </p>
     *
     * @param path 配置文件路径
     * @return

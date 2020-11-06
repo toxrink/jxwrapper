@@ -8,12 +8,13 @@ import java.util.stream.Collectors
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang.StringUtils
 import x.common.annotation.{ConfigValue, InjectValue}
+import x.log.Xlog
 
 /**
   * Created by xw on 2019/8/28.
   */
 object ReflectUtils {
-  private val LOG = JxUtils.getLogger(ReflectUtils.getClass)
+  private val LOG = Xlog.getLogger(ReflectUtils.getClass)
 
   /**
     * 打印包含ConfigValue的属性值

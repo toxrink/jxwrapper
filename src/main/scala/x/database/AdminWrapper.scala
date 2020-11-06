@@ -3,14 +3,15 @@ package x.database
 import java.sql.{Connection, DriverManager, ResultSet, SQLException, Types}
 import java.util
 
-import x.utils.JxUtils
+import x.log.Xlog
+
 import scala.jdk.CollectionConverters.ListHasAsScala
 
 /**
   * Created by xw on 2019/8/29.
   */
 object AdminWrapper {
-  private val LOG = JxUtils.getLogger(AdminWrapper.getClass)
+  private val LOG = Xlog.getLogger(AdminWrapper.getClass)
 
   def build(driver: String, url: String): Admin = {
     build(driver, url, null, null)

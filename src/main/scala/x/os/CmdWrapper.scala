@@ -8,13 +8,14 @@ import org.apache.commons.compress.archivers.tar.{TarArchiveEntry, TarArchiveInp
 import org.apache.commons.compress.archivers.zip.{ZipArchiveEntry, ZipArchiveOutputStream}
 import org.apache.commons.compress.compressors.gzip.GzipUtils
 import org.apache.commons.io.{FileUtils, IOUtils}
-import x.utils.{JxUtils, TimeUtils}
+import x.log.Xlog
+import x.utils.TimeUtils
 
 /**
   * Created by xw on 2019/8/1.
   */
 object CmdWrapper {
-  private val log = JxUtils.getLogger(CmdWrapper.getClass)
+  private val LOG = Xlog.getLogger(CmdWrapper.getClass)
 
   /**
     * tail文件
@@ -26,7 +27,7 @@ object CmdWrapper {
     */
   def tailf(fileWatch: FileWatcher, file: File, offset: Int, delay: Int): Unit = {
     val filePath = file.getAbsolutePath
-    log.info(s"start watch file: $filePath,offset $offset byte,push delay $delay ms")
+    LOG.info(s"start watch file: $filePath,offset $offset byte,push delay $delay ms")
     var raf: RandomAccessFile = null
     try {
       raf = new RandomAccessFile(file, "r")
@@ -35,7 +36,7 @@ object CmdWrapper {
       while (true) {
         msg = raf.readLine
         if (fileWatch.isStop) {
-          log.info(s"stop watch file: $filePath")
+          LOG.info(s"stop watch file: $filePath")
           return
         }
         if (null == msg) {
@@ -45,13 +46,13 @@ object CmdWrapper {
             fileWatch.push(msg)
             if (0 != delay) sleep(delay)
           } else {
-            log.info(s"stop watch file: $filePath")
+            LOG.info(s"stop watch file: $filePath")
             return
           }
         }
       }
     } catch {
-      case e: Exception => log.error("", e)
+      case e: Exception => LOG.error("", e)
     } finally {
       IOUtils.closeQuietly(raf)
     }
@@ -89,8 +90,8 @@ object CmdWrapper {
   def mkdirs(path: String): Unit = {
     val file = new File(path)
     if (!file.exists()) {
-      if (log.isDebugEnabled) {
-        log.debug("create dirs " + path)
+      if (LOG.isDebugEnabled) {
+        LOG.debug("create dirs " + path)
       }
       file.mkdirs()
     }
@@ -148,13 +149,13 @@ object CmdWrapper {
         fout = new FileOutputStream(outFile)
         IOUtils.copy(br, fout, encode)
         fout.close()
-        log.info("create file " + outFile.getAbsolutePath)
+        LOG.info("create file " + outFile.getAbsolutePath)
         fi = FileInfo(outFile)
         list.add(fi)
         entity = zip.getNextEntry
       }
     } catch {
-      case e: Exception => log.error("", e)
+      case e: Exception => LOG.error("", e)
     } finally {
       IOUtils.closeQuietly(br)
       IOUtils.closeQuietly(zip)
@@ -191,13 +192,13 @@ object CmdWrapper {
         fout = new FileOutputStream(outFile)
         IOUtils.copy(br, fout, encode)
         fout.close()
-        log.info("create file " + outFile.getAbsolutePath)
+        LOG.info("create file " + outFile.getAbsolutePath)
         fi = FileInfo(outFile)
         list.add(fi)
         entity = tar.getNextTarEntry
       }
     } catch {
-      case e: Exception => log.error("", e)
+      case e: Exception => LOG.error("", e)
     } finally {
       IOUtils.closeQuietly(br)
       IOUtils.closeQuietly(tar)
@@ -229,11 +230,11 @@ object CmdWrapper {
       val fout = new FileOutputStream(outFile)
       IOUtils.copy(br, fout, encode)
       fout.close()
-      log.info("create file " + outFile.getAbsolutePath)
+      LOG.info("create file " + outFile.getAbsolutePath)
       val fi = FileInfo(outFile)
       list.add(fi)
     } catch {
-      case e: Exception => log.error("", e)
+      case e: Exception => LOG.error("", e)
     } finally {
       IOUtils.closeQuietly(br)
       IOUtils.closeQuietly(gzipInput)
@@ -250,10 +251,10 @@ object CmdWrapper {
   def run(cmd: String): JxProcess = {
     var jxProcess: JxProcess = null
     try {
-      log.info(cmd)
+      LOG.info(cmd)
       jxProcess = new JxProcess(Runtime.getRuntime.exec(cmd))
     } catch {
-      case e: Throwable => log.error("", e)
+      case e: Throwable => LOG.error("", e)
     }
     jxProcess
   }
@@ -277,11 +278,11 @@ object CmdWrapper {
   def runWithEnv(command: Array[String]): JxProcess = {
     var jxProcess: JxProcess = null
     try {
-      log.info(command.mkString(" "))
+      LOG.info(command.mkString(" "))
       val processBuilder = new ProcessBuilder(command: _*)
       jxProcess = new JxProcess(processBuilder.start())
     } catch {
-      case e: Throwable => log.error("", e)
+      case e: Throwable => LOG.error("", e)
     }
     jxProcess
   }

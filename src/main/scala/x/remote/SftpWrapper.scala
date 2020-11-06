@@ -4,13 +4,13 @@ import java.io.File
 
 import com.jcraft.jsch.{ChannelSftp, JSchException, SftpException}
 import org.apache.commons.io.IOUtils
-import x.utils.JxUtils
+import x.log.Xlog
 
 /**
   * Created by xw on 2020/06/28.
   */
 object SftpWrapper {
-  private val LOG = JxUtils.getLogger(SftpWrapper.getClass())
+  private val LOG = Xlog.getLogger(SftpWrapper.getClass())
 
   /**
     * 远程复制文件

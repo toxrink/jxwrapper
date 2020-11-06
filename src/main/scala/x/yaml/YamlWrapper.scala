@@ -1,27 +1,27 @@
 package x.yaml
 
+import java.io.Reader
 import java.util
 
 import org.yaml.snakeyaml.Yaml
-import x.utils.JxUtils
+import x.log.Xlog
 
 import scala.io.Source
-import java.io.Reader
 
 /**
   * Created by xw on 2019/8/1.
   */
 object YamlWrapper {
 
-  private val log = JxUtils.getLogger(YamlWrapper.getClass)
+  private val LOG = Xlog.getLogger(YamlWrapper.getClass)
 
   def loadYamlAs[T](path: String, ctype: Class[T]): T = {
     loadYamlAs(path, ctype, "UTF-8")
   }
 
   def loadYamlAs[T](path: String, ctype: Class[T], charset: String): T = {
-    if (log.isDebugEnabled) {
-      log.debug("load yaml file " + path)
+    if (LOG.isDebugEnabled) {
+      LOG.debug("load yaml file " + path)
     }
     val yaml   = new Yaml()
     val reader = Source.fromFile(path, charset).bufferedReader()

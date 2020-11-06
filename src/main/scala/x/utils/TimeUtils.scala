@@ -4,12 +4,13 @@ import java.text.ParseException
 import java.util.{Calendar, Date}
 
 import org.apache.commons.lang.time.{DateFormatUtils, DateUtils}
+import x.log.Xlog
 
 /**
   * Created by xw on 2019/8/30.
   */
 object TimeUtils {
-  private val LOG = JxUtils.getLogger(TimeUtils.getClass)
+  private val LOG = Xlog.getLogger(TimeUtils.getClass)
 
   val SEC_MS = 1000
 

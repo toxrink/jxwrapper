@@ -2,7 +2,7 @@ package x.rmi
 
 import java.rmi.registry.LocateRegistry
 
-import x.utils.JxUtils
+import x.log.Xlog
 
 /**
   * Created by xw on 2019/8/2.
@@ -32,7 +32,7 @@ object RemoteWrapper {
   }
 
   case class RemoteServer(port: Int, name: String, server: RemoteService[Rmi]) {
-    private val log = JxUtils.getLogger(this.getClass)
+    private val LOG = Xlog.getLogger(this.getClass)
 
     def start(): Unit = {
       try {
@@ -40,7 +40,7 @@ object RemoteWrapper {
       } catch {
         case _: Throwable =>
       }
-      log.info(s"bind rmi service<$name> at $port")
+      LOG.info(s"bind rmi service<$name> at $port")
       val reg     = LocateRegistry.createRegistry(port)
       val service = server.apply
       reg.bind(name, service)
@@ -48,10 +48,10 @@ object RemoteWrapper {
   }
 
   case class RemoteClient(name: String, host: String = "localhost", port: Int) {
-    private val log = JxUtils.getLogger(this.getClass)
+    private val LOG = Xlog.getLogger(this.getClass)
 
     def connect[T <: Rmi](): T = {
-      log.info(s"lookup rmi service<$name> at $host:$port")
+      LOG.info(s"lookup rmi service<$name> at $host:$port")
       val registry = LocateRegistry.getRegistry(host, port)
       registry.lookup(name).asInstanceOf[T]
     }

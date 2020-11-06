@@ -4,7 +4,7 @@ import java.io.IOException
 
 import org.apache.commons.io.IOUtils
 import x.common.constant.JxConst
-import x.utils.JxUtils
+import x.log.Xlog
 
 import scala.io.Source
 
@@ -13,7 +13,7 @@ import scala.io.Source
   */
 class JxProcess(process: Process) {
 
-  private val log = JxUtils.getLogger(this.getClass)
+  private val LOG = Xlog.getLogger(this.getClass)
 
   private var errLimit = 0
 
@@ -38,7 +38,7 @@ class JxProcess(process: Process) {
           .foreach(l => {
             if (logsw && errLimit < errLines) {
               errLimit = errLimit + 1
-              log.error(
+              LOG.error(
                 new StringBuilder()
                   .append(errLimit)
                   .append("-StdErr#")
@@ -46,8 +46,8 @@ class JxProcess(process: Process) {
                   .append(" : ")
                   .append(l)
               )
-            } else if (log.isDebugEnabled) {
-              log.debug(prefix + " : " + l)
+            } else if (LOG.isDebugEnabled) {
+              LOG.debug(prefix + " : " + l)
             }
           })
         Source
@@ -56,7 +56,7 @@ class JxProcess(process: Process) {
           .foreach(l => {
             if (logsw && errLimit2 < errLines) {
               errLimit2 = errLimit2 + 1
-              log.info(
+              LOG.info(
                 new StringBuilder()
                   .append(errLimit2)
                   .append("-StdIn#")
@@ -64,14 +64,14 @@ class JxProcess(process: Process) {
                   .append(" : ")
                   .append(l)
               )
-            } else if (log.isDebugEnabled) {
-              log.debug(prefix + " : " + l)
+            } else if (LOG.isDebugEnabled) {
+              LOG.debug(prefix + " : " + l)
             }
           })
         process.waitFor()
       } catch {
-        case e: IOException          => log.error("", e)
-        case e: InterruptedException => log.error("", e)
+        case e: IOException          => LOG.error("", e)
+        case e: InterruptedException => LOG.error("", e)
       }
     }
     new Thread(run, "JxProcess-" + System.currentTimeMillis()).start()
@@ -125,7 +125,7 @@ class JxProcess(process: Process) {
       }
       ret = br.readLine()
     } catch {
-      case e: IOException => log.error("", e)
+      case e: IOException => LOG.error("", e)
     } finally {
       IOUtils.closeQuietly(br)
     }

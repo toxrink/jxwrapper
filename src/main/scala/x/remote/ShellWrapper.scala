@@ -5,14 +5,15 @@ import java.util.{Date, Properties}
 
 import com.jcraft.jsch.ChannelExec
 import org.apache.commons.io.IOUtils
+import x.log.Xlog
 import x.os.CmdWrapper
-import x.utils.{JxUtils, TimeUtils}
+import x.utils.TimeUtils
 
 /**
   * Created by xw on 2019/8/29.
   */
 object ShellWrapper {
-  private val LOG = JxUtils.getLogger(ShellWrapper.getClass)
+  private val LOG = Xlog.getLogger(ShellWrapper.getClass)
 
   private val defaultLogOut = new LogOutput {
     override def apply(obj: Object): Unit = LOG.info(obj)

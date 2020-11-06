@@ -7,10 +7,10 @@ import scala.beans.BeanProperty
   */
 class SftpInfo(hostInfo: HostInfo) extends HostInfo {
 
-  setHost(hostInfo.getHost)
-  setPort(hostInfo.getPort)
-  setUsername(hostInfo.getUsername)
-  setPassword(hostInfo.getPassword)
+  setHost(hostInfo.getHost())
+  setPort(hostInfo.getPort())
+  setUsername(hostInfo.getUsername())
+  setPassword(hostInfo.getPassword())
 
   def this() = {
     this(new HostInfo())

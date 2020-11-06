@@ -121,7 +121,7 @@ object SftpWrapper {
     */
   def isRemoteDirectoryExist(remote: String, sftpInfo: SftpInfo): Boolean = {
     var session: SessionWrapper[ChannelSftp] = null
-    var exist                                = false
+    var exist = false
     try {
       session = new SessionWrapper[ChannelSftp](sftpInfo)
       val sftp = session.openChannel("sftp")
@@ -144,7 +144,7 @@ object SftpWrapper {
     */
   def isRemoteExist(remote: String, sftpInfo: SftpInfo): Boolean = {
     var session: SessionWrapper[ChannelSftp] = null
-    var exist                                = false
+    var exist = false
     try {
       session = new SessionWrapper[ChannelSftp](sftpInfo)
       val sftp = session.openChannel("sftp")
@@ -238,8 +238,8 @@ object SftpWrapper {
         if (attrs.isDir()) {
           new File(local + "/" + remote.substring(base)).mkdir()
           val list = sftp.ls(remote).asInstanceOf[java.util.Vector[sftp.LsEntry]]
-          import scala.collection.JavaConversions._
-          list.foreach((e: sftp.LsEntry) => {
+          import scala.jdk.CollectionConverters.ListHasAsScala
+          list.asScala.foreach((e: sftp.LsEntry) => {
             if (!e.getFilename().startsWith(".")) {
               LOG.info("FETCH " + remote)
               download(local, remote + "/" + e.getFilename(), base, sftp)

@@ -5,7 +5,7 @@ import x.database.AdminWrapper
   */
 object AdminTest {
   def main(args: Array[String]): Unit = {
-    import scala.collection.JavaConversions._
+    import scala.jdk.CollectionConverters.ListHasAsScala
     val admin = AdminWrapper.build(
       "org.apache.hive.jdbc.HiveDriver",
       "jdbc:hive2://vrv203:2181,vrv204:2181,vrv205:2181,vrv206:2181,vrv207:2181/vap;serviceDiscoveryMode=zooKeeper;zooKeeperNamespace=hiveserver2",
@@ -13,7 +13,7 @@ object AdminTest {
       ""
     )
     admin.connect()
-    admin.getHiveTables.foreach(println)
+    admin.getHiveTables.asScala.foreach(println)
     admin.close()
 //    val admin = AdminWrapper.build("com.mysql.jdbc.Driver", "jdbc:mysql://192.168.119.208:3306/scas?useSSL=false",
 //      "root", "root")

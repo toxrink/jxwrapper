@@ -4,7 +4,7 @@ import java.sql.{Connection, DriverManager, ResultSet, SQLException, Types}
 import java.util
 
 import x.utils.JxUtils
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters.ListHasAsScala
 
 /**
   * Created by xw on 2019/8/29.
@@ -86,9 +86,9 @@ object AdminWrapper {
       try {
         val rs = conn.createStatement().executeQuery("show tables")
         list = new ResultSetWrapper[TableInfo](rs).mapToList(table => {
-          val rs2               = conn.createStatement().executeQuery("desc " + table.getString(1))
-          val cList             = new util.ArrayList[String]()
-          val ctList            = new util.ArrayList[Int]()
+          val rs2 = conn.createStatement().executeQuery("desc " + table.getString(1))
+          val cList = new util.ArrayList[String]()
+          val ctList = new util.ArrayList[Int]()
           val columnWithTypeMap = new util.HashMap[String, Int]()
           while (rs2.next()) {
             if (null == rs2.getString(2) || columnWithTypeMap.containsKey(rs2.getString(1))) {
@@ -150,11 +150,11 @@ object AdminWrapper {
       val list = new util.ArrayList[TableInfo]()
       try {
         val dmd = conn.getMetaData
-        val rs  = dmd.getTables("", "", "", Array[String]("TABLE"))
+        val rs = dmd.getTables("", "", "", Array[String]("TABLE"))
         while (rs.next()) {
-          val rs2               = dmd.getColumns("", "", rs.getString(3), "")
-          val cList             = new util.ArrayList[String]()
-          val ctList            = new util.ArrayList[Int]()
+          val rs2 = dmd.getColumns("", "", rs.getString(3), "")
+          val cList = new util.ArrayList[String]()
+          val ctList = new util.ArrayList[Int]()
           val columnWithTypeMap = new util.HashMap[String, Int]()
           while (rs2.next()) {
             cList.add(rs2.getString(4))

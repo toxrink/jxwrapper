@@ -14,13 +14,13 @@ class SessionWrapper[T <: Channel](hostInfo: HostInfo, option: Properties) exten
   private val LOG = JxUtils.getLogger(SftpWrapper.getClass())
 
   private val jsch = new JSch()
-  private val session = jsch.getSession(hostInfo.getUsername, hostInfo.getHost, hostInfo.getPort)
-  session.setPassword(hostInfo.getPassword)
+  private val session = jsch.getSession(hostInfo.getUsername(), hostInfo.getHost(), hostInfo.getPort())
+  session.setPassword(hostInfo.getPassword())
   session.setConfig("StrictHostKeyChecking", "no")
   if (null != option) {
     session.setConfig(option)
   }
-  LOG.info(s"ssh to ${hostInfo.getHost}:${hostInfo.getPort}")
+  LOG.info(s"ssh to ${hostInfo.getHost()}:${hostInfo.getPort()}")
   session.connect()
 
   private var channel: Channel = _

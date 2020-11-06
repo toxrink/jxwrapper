@@ -2,7 +2,6 @@ import java.util
 
 import x.yaml.YamlWrapper
 
-import scala.collection.JavaConversions._
 import scala.collection.mutable
 
 /**
@@ -28,8 +27,8 @@ object YamlTest {
 //      println(yaml.getString("setting.type"))
 //    })
 
-    val map = new util.LinkedHashMap[String,Object]()
-    map.put("a","1")
+    val map = new util.LinkedHashMap[String, Object]()
+    map.put("a", "1")
     val yaml = YamlWrapper.loadAsYamlEntry(map)
     println(yaml.getBoolean("a"))
   }

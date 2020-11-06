@@ -25,7 +25,7 @@ object ShellTest {
       var i = 0
 
       override def apply(obj: Object): Unit = {
-        println(i + "#" + obj)
+        println(s"$i#$obj")
         i = i + 1
         CmdWrapper.sleep(1000)
       }
@@ -34,15 +34,13 @@ object ShellTest {
         sstop
       }
     }
-    new Thread(new Runnable {
-      override def run(): Unit = {
-        ShellWrapper.tailFile(
-          hostInfo,
-          "/var/log/vap-mp/agent-server.log",
-          "-n -5 ",
-          lo
-        )
-      }
+    new Thread(() => {
+      ShellWrapper.tailFile(
+        hostInfo,
+        "/var/log/vap-mp/agent-server.log",
+        "-n -5 ",
+        lo
+      )
     }).start()
 
     var i = 0

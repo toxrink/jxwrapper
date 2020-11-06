@@ -27,26 +27,26 @@ object AreaUtils {
     * @return
     */
   def loadAreaInfo(path: String): Array[AreaInfo] = {
-    import scala.collection.JavaConversions._
+    import scala.jdk.CollectionConverters.MapHasAsScala
     val yamlEntry = YamlWrapper
       .loadYamlAsLinkedHashMap(path)
       .asInstanceOf[util.LinkedHashMap[String, util.LinkedHashMap[String, Object]]]
-    yamlEntry
-      .flatMap(m => {
+    yamlEntry.asScala
+      .flatMap[AreaInfo](m => {
         val areaName = castString(m._1, "").trim
-        val areaCode = castString(m._2("area-code"), "").trim
-        val ipRanges = castString(m._2("ip-ranges"), "")
+        val areaCode = castString(m._2.get("area-code"), "").trim
+        val ipRanges = castString(m._2.get("ip-ranges"), "")
         if ("".equals(areaName) || "".equals(areaCode) || "".equals(ipRanges)) {
           Array[AreaInfo]()
         } else {
           ipRanges
             .split(",")
             .map(ips => {
-              val ips1          = ips.split("-")
-              val startIp       = ips1(0).trim
-              val endIp         = if (ips1.length == 1) startIp else ips1(1).trim
+              val ips1 = ips.split("-")
+              val startIp = ips1(0).trim
+              val endIp = if (ips1.length == 1) startIp else ips1(1).trim
               val startIpNumber = IpUtils.ipToNum(startIp)
-              val endIpNumber   = IpUtils.ipToNum(endIp)
+              val endIpNumber = IpUtils.ipToNum(endIp)
 
               AreaInfo(areaName, areaCode, startIp, endIp, startIpNumber, endIpNumber)
             })
@@ -114,10 +114,10 @@ case class AreaTool(sortedAreas: Array[AreaInfo]) {
     */
   def binarySearch(ip: String): Option[AreaInfo] = {
     val ipNumber = IpUtils.ipToNum(ip)
-    var start    = 0
-    var end      = sortedAreas.length - 1
+    var start = 0
+    var end = sortedAreas.length - 1
     while (start <= end) {
-      val mid         = (end + start) / 2
+      val mid = (end + start) / 2
       val midAreaInfo = sortedAreas(mid)
       if (midAreaInfo.startIpNumber <= ipNumber
           && midAreaInfo.endIpNumber >= ipNumber) {

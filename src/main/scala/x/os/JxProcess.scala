@@ -30,55 +30,51 @@ class JxProcess(process: Process) {
     * @return
     */
   def waitFor(prefix: String, logsw: Boolean, errLines: Int): JxProcess = {
-    new Thread(
-      new Runnable {
-        override def run(): Unit = {
-          try {
-            Source
-              .fromInputStream(process.getErrorStream, charset)
-              .getLines()
-              .foreach(l => {
-                if (logsw && errLimit < errLines) {
-                  errLimit = errLimit + 1
-                  log.error(
-                    new StringBuilder()
-                      .append(errLimit)
-                      .append("-StdErr#")
-                      .append(prefix)
-                      .append(" : ")
-                      .append(l)
-                  )
-                } else if (log.isDebugEnabled) {
-                  log.debug(prefix + " : " + l)
-                }
-              })
-            Source
-              .fromInputStream(process.getInputStream, charset)
-              .getLines()
-              .foreach(l => {
-                if (logsw && errLimit2 < errLines) {
-                  errLimit2 = errLimit2 + 1
-                  log.info(
-                    new StringBuilder()
-                      .append(errLimit2)
-                      .append("-StdIn#")
-                      .append(prefix)
-                      .append(" : ")
-                      .append(l)
-                  )
-                } else if (log.isDebugEnabled) {
-                  log.debug(prefix + " : " + l)
-                }
-              })
-            process.waitFor()
-          } catch {
-            case e: IOException          => log.error("", e)
-            case e: InterruptedException => log.error("", e)
-          }
-        }
-      },
-      "JxProcess-" + System.currentTimeMillis()
-    ).start()
+    val run: Runnable = () => {
+      try {
+        Source
+          .fromInputStream(process.getErrorStream, charset)
+          .getLines()
+          .foreach(l => {
+            if (logsw && errLimit < errLines) {
+              errLimit = errLimit + 1
+              log.error(
+                new StringBuilder()
+                  .append(errLimit)
+                  .append("-StdErr#")
+                  .append(prefix)
+                  .append(" : ")
+                  .append(l)
+              )
+            } else if (log.isDebugEnabled) {
+              log.debug(prefix + " : " + l)
+            }
+          })
+        Source
+          .fromInputStream(process.getInputStream, charset)
+          .getLines()
+          .foreach(l => {
+            if (logsw && errLimit2 < errLines) {
+              errLimit2 = errLimit2 + 1
+              log.info(
+                new StringBuilder()
+                  .append(errLimit2)
+                  .append("-StdIn#")
+                  .append(prefix)
+                  .append(" : ")
+                  .append(l)
+              )
+            } else if (log.isDebugEnabled) {
+              log.debug(prefix + " : " + l)
+            }
+          })
+        process.waitFor()
+      } catch {
+        case e: IOException          => log.error("", e)
+        case e: InterruptedException => log.error("", e)
+      }
+    }
+    new Thread(run, "JxProcess-" + System.currentTimeMillis()).start()
     this
   }
 
@@ -119,8 +115,8 @@ class JxProcess(process: Process) {
     * @return
     */
   def getLine(line: Int): String = {
-    val br  = Source.fromInputStream(process.getInputStream, charset).bufferedReader()
-    var cd  = line
+    val br = Source.fromInputStream(process.getInputStream, charset).bufferedReader()
+    var cd = line
     var ret = ""
     try {
       while (cd > 0) {

@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'jxwrapper'
-version '0.10.3.2'
+version '0.10.4'
 
 sourceCompatibility = 1.8
 
@@ -50,8 +50,7 @@ publishing {
 }
 
 dependencies {
-    compile 'org.scala-lang:scala-library:2.11.12'
-    zinc 'com.typesafe.zinc:zinc:0.3.9'
+    compile 'org.scala-lang:scala-library:2.13.3'
     compile 'org.yaml:snakeyaml:1.15'
     compile 'commons-io:commons-io:2.4'
     compile 'commons-logging:commons-logging:1.2'

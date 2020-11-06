@@ -8,7 +8,7 @@ trait FileWatcher {
   /**
     * 数据处理方法
     *
-    * @param msg
+    * @param msg 信息
     */
   def push(msg: String): Unit
 

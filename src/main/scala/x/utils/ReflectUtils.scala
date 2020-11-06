@@ -1,9 +1,8 @@
 package x.utils
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, IOException, ObjectInputStream, ObjectOutputStream}
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
 import java.lang.reflect.Field
 import java.util
-import java.util.function.Predicate
 import java.util.stream.Collectors
 
 import org.apache.commons.io.IOUtils
@@ -283,9 +282,7 @@ object ReflectUtils {
         list.addAll(util.Arrays.asList(clazz.getDeclaredFields(): _*))
         list
           .stream()
-          .filter(new Predicate[Field] {
-            override def test(t: Field): Boolean = null != getAnnotation(t)
-          })
+          .filter(t => null != getAnnotation(t))
           .collect(Collectors.toList())
       }
     }
@@ -305,9 +302,7 @@ object ReflectUtils {
         list.addAll(util.Arrays.asList(clazz.getDeclaredFields(): _*))
         list
           .stream()
-          .filter(new Predicate[Field] {
-            override def test(t: Field): Boolean = null != getAnnotation(t)
-          })
+          .filter(t => null != getAnnotation(t))
           .collect(Collectors.toList())
       }
     }

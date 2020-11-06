@@ -3,7 +3,7 @@ package x.os
 import java.io.IOException
 
 import org.apache.commons.io.IOUtils
-import x.self.JxConst
+import x.common.constant.JxConst
 import x.utils.JxUtils
 
 import scala.io.Source
@@ -148,7 +148,10 @@ class JxProcess(process: Process) {
     IOUtils.toString(process.getErrorStream, charset)
   }
 
-  def destroy: Unit = {
+  /**
+    * 销毁process
+    */
+  def destroy(): Unit = {
     process.destroy()
   }
 }

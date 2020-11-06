@@ -1,14 +1,10 @@
 package x.remote
 
-import com.jcraft.jsch.ChannelSftp
-import com.jcraft.jsch.JSchException
-import com.jcraft.jsch.SftpATTRS
-import com.jcraft.jsch.SftpException
-import org.apache.commons.io.IOUtils
-import org.apache.commons.logging.Log
-import x.utils.JxUtils
-
 import java.io.File
+
+import com.jcraft.jsch.{ChannelSftp, JSchException, SftpException}
+import org.apache.commons.io.IOUtils
+import x.utils.JxUtils
 
 /**
   * Created by xw on 2020/06/28.
@@ -36,7 +32,7 @@ object SftpWrapper {
     } finally {
       IOUtils.closeQuietly(session)
     }
-    return true
+    true
   }
 
   /**
@@ -109,7 +105,7 @@ object SftpWrapper {
         }
         LOG.error("", e)
     }
-    return true
+    true
   }
 
   /**
@@ -188,19 +184,21 @@ object SftpWrapper {
     * @return
     */
   def get(sftpInfo: SftpInfo): Boolean = {
+    var ret = false
     var session: SessionWrapper[ChannelSftp] = null
     try {
       session = new SessionWrapper[ChannelSftp](sftpInfo)
       val sftp = session.openChannel("sftp")
       sftp.connect()
-      return download(sftpInfo.getLocal(), sftpInfo.getRemote(), sftp)
+      ret = download(sftpInfo.getLocal(), sftpInfo.getRemote(), sftp)
     } catch {
       case e: Exception =>
         LOG.error("", e)
-        return false
+        ret = false
     } finally {
       IOUtils.closeQuietly(session)
     }
+    ret
   }
 
   /**
@@ -254,7 +252,7 @@ object SftpWrapper {
           LOG.error("", e)
           return false
       }
-      return true
+      true
     }
   }
 }

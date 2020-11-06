@@ -5,7 +5,7 @@ import java.util.UUID
 
 import javax.crypto.{Cipher, KeyGenerator}
 import org.apache.commons.codec.binary.Base64
-import x.self.JxConst
+import x.common.constant.JxConst
 
 /**
   * Created by xw on 2019/8/1.

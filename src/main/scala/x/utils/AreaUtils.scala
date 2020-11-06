@@ -23,7 +23,7 @@ object AreaUtils {
     * * &nbsp;&nbsp;ip-ranges: 10.22.0.1-10.22.40.254,10.22.42.1-10.22.45.254<br>
     * *</p>
     *
-    * @param path
+    * @param path 配置文件路径
     * @return
     */
   def loadAreaInfo(path: String): Array[AreaInfo] = {
@@ -58,7 +58,7 @@ object AreaUtils {
   /**
     * @see #loadAreaInfo(String)
     *
-    * @param path
+    * @param path 配置文件路径
     * @return
     */
   def loadArea(path: String): AreaTool = {
@@ -68,7 +68,7 @@ object AreaUtils {
 
   /**
     * 加载区域配置,会自动根据startIpNumnber从小到大排序
-    * @param areaInfoList
+    * @param areaInfoList 区域配置
     * @return
     */
   def loadArea(areaInfoList: util.ArrayList[AreaInfo]): AreaTool = {
@@ -77,7 +77,7 @@ object AreaUtils {
 
   /**
     * 加载区域配置,会自动根据startIpNumnber从小到大排序
-    * @param areas
+    * @param areas 区域配置
     * @return
     */
   def loadArea(areas: Array[AreaInfo]): AreaTool = {
@@ -98,7 +98,7 @@ case class AreaTool(sortedAreas: Array[AreaInfo]) {
 
   /**
     * 根据ip查找区域信息
-    * @param ip
+    * @param ip ip地址
     * @return
     */
   def search(ip: String): Option[AreaInfo] = {
@@ -109,7 +109,7 @@ case class AreaTool(sortedAreas: Array[AreaInfo]) {
   /**
     * 根据ip二分查找区域信息,未找到返回null<br>
     * 使用该方法查找,ip范围不能有交叉的范围
-    * @param ip
+    * @param ip ip地址
     * @return
     */
   def binarySearch(ip: String): Option[AreaInfo] = {
@@ -133,7 +133,7 @@ case class AreaTool(sortedAreas: Array[AreaInfo]) {
 
   /**
     * 获取区域名称
-    * @param ip
+    * @param ip ip地址
     * @return
     */
   def getAreaName(ip: String): String = {
@@ -147,7 +147,7 @@ case class AreaTool(sortedAreas: Array[AreaInfo]) {
 
   /**
     * 获取区域码
-    * @param ip
+    * @param ip ip地址
     * @return
     */
   def getAreaCode(ip: String): String = {
@@ -161,7 +161,7 @@ case class AreaTool(sortedAreas: Array[AreaInfo]) {
 
   /**
     * 二分查找获取区域名称
-    * @param ip
+    * @param ip ip地址
     * @return
     */
   def getAreaName2(ip: String): String = {
@@ -175,7 +175,7 @@ case class AreaTool(sortedAreas: Array[AreaInfo]) {
 
   /**
     * 二分查找获取区域码
-    * @param ip
+    * @param ip ip地址
     * @return
     */
   def getAreaCode2(ip: String): String = {

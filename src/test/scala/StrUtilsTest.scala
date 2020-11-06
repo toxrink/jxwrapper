@@ -5,6 +5,8 @@ import x.utils.StrUtils
   */
 object StrUtilsTest {
 
+  System.setProperty("TEST", "123123")
+
   def main(args: Array[String]): Unit = {
 //    println(StrUtils.toMD5("你好"))
 //    println(StrUtils.upperCaseFirstLetter("sdf你好"))
@@ -19,5 +21,6 @@ object StrUtilsTest {
 //    val d = StrUtils.encodeDES("123456", "println(StrUtils.camelToUnderLine(\"readMe你好\"))")
 //    println(d)
 //    println(StrUtils.decodeDES("123456", d))
+    print(StrUtils.getEnvironmentValue("${TEST}"))
   }
 }
